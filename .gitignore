@@ -1,0 +1,7 @@
+.vscode/
+graphs/
+__pycache__/
+data/mnist/
+log/
+*.h5
+*.npy
