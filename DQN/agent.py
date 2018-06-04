@@ -17,13 +17,16 @@ class Agent:
 
     GAMMA = 0.99
 
-    def __init__(self, stateDataCount, actionCount, max_eps=1, min_eps=0.01):
+    def __init__(self, stateDataCount, actionCount, 
+                max_eps=1, min_eps=0.01, update_target_frequency=1000):
         self.steps = 0
         self.stateDataCount = stateDataCount
         self.actionCount = actionCount
 
         self.max_eps = max_eps
         self.min_eps = min_eps
+
+        self.update_target_frequency = update_target_frequency
 
         self.epsilon = max_eps
 
@@ -39,7 +42,8 @@ class Agent:
     def observe(self, sample): # (s, a, r, s') tupla
         self.memory.add(sample)
 
-        if self.steps % 1000 == 0:
+        if self.steps % self.update_target_frequency == 0:
+            self.brain.update_target_model()
             print("Steps", self.steps)
 
         # Decay the learning
@@ -57,7 +61,7 @@ class Agent:
         new_states = np.array([(no_state if obs[3] is None else obs[3]) for obs in batch])
 
         p = self.brain.predict(curr_states)
-        p_ = self.brain.predict(new_states)
+        p_ = self.brain.predict_target(new_states)
 
         x = np.zeros((batchLen, self.stateDataCount))
         y = np.zeros((batchLen, self.actionCount))

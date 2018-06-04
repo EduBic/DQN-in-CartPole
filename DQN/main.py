@@ -1,6 +1,7 @@
 
-import matplotlib.pyplot as plt
+import matplotlib.0 as plt
 import gym
+import numpy as np
 
 from environment import Environment
 from agent import Agent
@@ -55,21 +56,20 @@ def main():
     print("\nStart")
 
     plt.ion()
-    plt.show()
     plt.ylabel('rewards')
     plt.xlabel('episodes')
+    plt.show()
     
-    for iter in range(1000):
+    for iter in range(10000):
         reward_each_ep.append(env.run(agent))
 
-        if iter % 100 == 0:
+        if iter % 250 == 0:
             plt.plot(reward_each_ep)
             plt.draw()
             plt.pause(0.001)
     
     agent.brain.model.save(env.name + "-basic.h5")
-
-    plt.show()
+    plt.savefig(env.name + ".png")
 
     print("End\n")
 

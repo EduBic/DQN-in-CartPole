@@ -59,5 +59,5 @@ class Environment:
 
             tot_reward += reward
 
-        print("Total reward:", tot_reward)
+        #print("Total reward:", tot_reward)
         return tot_reward
