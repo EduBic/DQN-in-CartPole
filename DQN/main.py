@@ -1,5 +1,5 @@
 
-import matplotlib.0 as plt
+import matplotlib.pyplot as plt
 import gym
 import numpy as np
 
