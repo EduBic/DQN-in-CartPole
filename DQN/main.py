@@ -60,16 +60,17 @@ def main():
     plt.xlabel('episodes')
     plt.show()
     
-    for iter in range(10000):
-        reward_each_ep.append(env.run(agent))
+    try:
+        for iter in range(1000):
+            reward_each_ep.append(env.run(agent))
 
-        if iter % 250 == 0:
-            plt.plot(reward_each_ep)
-            plt.draw()
-            plt.pause(0.001)
-    
-    agent.brain.model.save(env.name + "-basic.h5")
-    plt.savefig(env.name + ".png")
+            if iter % 250 == 0:
+                plt.plot(reward_each_ep)
+                plt.draw()
+                plt.pause(0.001)
+    finally:
+        agent.brain.model.save(env.name + "-basic.h5")
+        plt.savefig(env.name + ".png")
 
     print("End\n")
 
