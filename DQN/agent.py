@@ -20,6 +20,8 @@ from memory import Memory
 
 class Agent:
 
+    memory_capacity=10000
+
     def __init__(self, stateDataCount, actionCount,
                  max_eps=1,
                  min_eps=0.01,
@@ -46,7 +48,7 @@ class Agent:
         self.epsilon = max_eps
 
         self.brain = Brain(stateDataCount, actionCount)
-        self.memory = Memory(Agent.memory_capacity)
+        self.memory = Memory(self.memory_capacity)
 
     def act(self, curr_state):
         if random.random() < self.epsilon:
@@ -63,11 +65,11 @@ class Agent:
 
         # Decay the learning
         self.steps += 1
-        self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(-Agent.mLambda * self.steps)
+        self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(- self.mLambda * self.steps)
 
 
     def replay(self):
-        batch = self.memory.get_rand_samples(Agent.mem_batch_size)
+        batch = self.memory.get_rand_samples(self.mem_batch_size)
         batchLen = len(batch)
 
         no_state = np.zeros(self.stateDataCount)
@@ -94,7 +96,7 @@ class Agent:
             if new_state is None:
                 t[action] = reward
             else:
-                t[action] = reward + Agent.gamma * np.amax(p_[i])
+                t[action] = reward + self.gamma * np.amax(p_[i])
 
             x[i] = state
             y[i] = t
