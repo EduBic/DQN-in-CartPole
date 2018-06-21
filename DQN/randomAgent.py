@@ -11,7 +11,7 @@ This speed up the learning process.
 class RandomAgent:
 
     def __init__(self, actionsCount):
-        self.memory = Memory(Agent.MEMORY_CAPACITY)
+        self.memory = Memory(Agent.memory_capacity)
         self.actionsCount = actionsCount
 
     def act(self, state):

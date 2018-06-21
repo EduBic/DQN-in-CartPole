@@ -6,19 +6,36 @@ import numpy as np
 from brain import Brain
 from memory import Memory
 
+'''
+% Agent
+ max_eps=1
+ min_eps=0.01
+ update_target_frequency=1000
+ mLambda=0.001
+ memory_capacity=10000
+ mem_batch_size=64
+ gamma=0.99
+%
+'''
+
 class Agent:
-    #MAX_EPSILON = 1
-    #MIN_EPSILON = 0.01
 
-    LAMBDA = 0.001 # speed of decay
+    memory_capacity=10000
 
-    MEMORY_CAPACITY = 10000
-    MEM_BATCH_SIZE = 64
+    def __init__(self, stateDataCount, actionCount,
+                 max_eps=1,
+                 min_eps=0.01,
+                 update_target_frequency=1000,
+                 mLambda=0.001,
+                 memory_capacity=10000,
+                 mem_batch_size=64,
+                 gamma=0.99):
 
-    GAMMA = 0.99
+        self.mLambda = mLambda
+        self.memory_capacity = memory_capacity
+        self.mem_batch_size = mem_batch_size
+        self.gamma = gamma
 
-    def __init__(self, stateDataCount, actionCount, 
-                max_eps=1, min_eps=0.01, update_target_frequency=1000):
         self.steps = 0
         self.stateDataCount = stateDataCount
         self.actionCount = actionCount
@@ -31,7 +48,7 @@ class Agent:
         self.epsilon = max_eps
 
         self.brain = Brain(stateDataCount, actionCount)
-        self.memory = Memory(Agent.MEMORY_CAPACITY)
+        self.memory = Memory(self.memory_capacity)
 
         # state to test q value
         self.q_state = np.array([-0.01335408, -0.04600273, -0.00677248, 0.01517507])
@@ -42,7 +59,7 @@ class Agent:
             return random.randint(0, self.actionCount - 1)
         else:
             return np.argmax(self.brain.predictOne(curr_state))
-            
+
     def observe(self, sample): # (s, a, r, s') tupla
         self.memory.add(sample)
 
@@ -55,11 +72,11 @@ class Agent:
 
         # Decay the learning
         self.steps += 1
-        self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(-Agent.LAMBDA * self.steps)
+        self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(- self.mLambda * self.steps)
 
 
     def replay(self):
-        batch = self.memory.get_rand_samples(Agent.MEM_BATCH_SIZE)
+        batch = self.memory.get_rand_samples(self.mem_batch_size)
         batchLen = len(batch)
 
         no_state = np.zeros(self.stateDataCount)
@@ -86,8 +103,8 @@ class Agent:
             if new_state is None:
                 t[action] = reward
             else:
-                t[action] = reward + Agent.GAMMA * np.amax(p_[i])
-            
+                t[action] = reward + self.gamma * np.amax(p_[i])
+
             x[i] = state
             y[i] = t
 
