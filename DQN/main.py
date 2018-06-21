@@ -21,7 +21,7 @@ def get_rand_agent_memory(env, actionsCount):
 
 def init_CartPole():
     CartPoleProb = "CartPole-v0"
-    env = Environment(CartPoleProb, normalize=False, render=False)
+    env = Environment(CartPoleProb, normalize=False, render=True)
 
     stateDataCount = env.env.observation_space.shape[0]
     actionsCount = env.env.action_space.n
@@ -75,11 +75,11 @@ def main():
 
             for episode in range(5000):
 
-
+                reward_result = env.run(agent)
                 q_results = agent.get_and_reinit_q_results()
                 results.append({
                     fieldnames[0]: episode + 1,
-                    fieldnames[1]: env.run(agent),
+                    fieldnames[1]: reward_result,
                     fieldnames[2]: np.mean(q_results)
                 })
 
