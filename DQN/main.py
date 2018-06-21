@@ -10,13 +10,14 @@ from environment import Environment
 from agent import Agent
 from randomAgent import RandomAgent
 
+
 def get_rand_agent_memory(env, actionsCount):
     randAgent = RandomAgent(actionsCount)
-    while randAgent.memory.is_full(): 
-        env.run(randAgent) 
+    while randAgent.memory.is_full():
+        env.run(randAgent)
 
     return randAgent.memory
-    
+
 
 def init_CartPole():
     CartPoleProb = "CartPole-v0"
@@ -52,6 +53,7 @@ def init_MountainCar():
 
     return agent, env
 
+
 def main():
     agent, env = init_CartPole()
 
@@ -67,7 +69,7 @@ def main():
         fieldnames = ['episode', 'reward']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-    
+
         try:
             results = []
 
