@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import gym
 import numpy as np
 
+import csv
+import datetime as dt
+
 from environment import Environment
 from agent import Agent
 from randomAgent import RandomAgent
@@ -50,27 +53,38 @@ def init_MountainCar():
     return agent, env
 
 def main():
-    reward_each_ep = []
     agent, env = init_CartPole()
 
     print("\nStart")
 
-    #plt.ion()
-    #plt.ylabel('rewards')
-    #plt.xlabel('episodes')
-    #plt.show()
-    
-    try:
-        for iter in range(1000):
-            reward_each_ep.append(env.run(agent))
+    # initialize the csv 
+    folder = 'results/'
+    nameResult = env.name + '-' + dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    fileNetPath = folder + nameResult + '.h5'
+    fileCsvPath = folder + nameResult + '.csv'
 
-            # if iter % 250 == 0:
-            #     plt.plot(reward_each_ep)
-            #     plt.draw()
-            #     plt.pause(0.001)
-    finally:
-        agent.brain.model.save(env.name + "-basic.h5")
-        #plt.savefig(env.name + ".png")
+    with open(fileCsvPath, 'w', newline='') as csvfile:
+        fieldnames = ['episode', 'reward']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+    
+        try:
+            results = []
+
+            for episode in range(4000):
+
+                results.append({
+                    fieldnames[0]: episode + 1,
+                    fieldnames[1]: env.run(agent)
+                })
+
+                if episode % 250 == 0:
+                    writer.writerows(results)
+                    results = []
+
+        finally:
+            writer.writerows(results)
+            agent.brain.model.save(fileNetPath)
 
     print("End\n")
 
