@@ -64,18 +64,21 @@ def main():
     fileCsvPath = folder + nameResult + '.csv'
 
     with open(fileCsvPath, 'w', newline='') as csvfile:
-        fieldnames = ['episode', 'reward']
+        fieldnames = ['episode', 'reward', 'q-value']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
     
         try:
             results = []
 
-            for episode in range(4000):
+            for episode in range(5000):
 
+
+                q_results = agent.get_and_reinit_q_results()
                 results.append({
                     fieldnames[0]: episode + 1,
-                    fieldnames[1]: env.run(agent)
+                    fieldnames[1]: env.run(agent),
+                    fieldnames[2]: np.mean(q_results)
                 })
 
                 if episode % 250 == 0:

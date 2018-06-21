@@ -33,6 +33,10 @@ class Agent:
         self.brain = Brain(stateDataCount, actionCount)
         self.memory = Memory(Agent.MEMORY_CAPACITY)
 
+        # state to test q value
+        self.q_state = np.array([-0.01335408, -0.04600273, -0.00677248, 0.01517507])
+        self.q_results = np.array([])
+
     def act(self, curr_state):
         if random.random() < self.epsilon:
             return random.randint(0, self.actionCount - 1)
@@ -45,6 +49,9 @@ class Agent:
         if self.steps % self.update_target_frequency == 0:
             self.brain.update_target_model()
             print("Steps", self.steps)
+
+        pred = self.brain.predictOne(self.q_state)
+        self.q_results = np.append(self.q_results, pred)
 
         # Decay the learning
         self.steps += 1
@@ -86,4 +93,7 @@ class Agent:
 
         self.brain.train(x, y)
 
-    
+    def get_and_reinit_q_results(self):
+        res = np.copy(self.q_results)
+        self.q_results = np.array([])
+        return res
