@@ -60,6 +60,7 @@ def main():
     prefix = "test-seed"
 
     random.seed(42)
+    np.random.seed(42)
     agent, env = init_CartPole()
     env.set_seed(42)
 
@@ -77,7 +78,7 @@ def main():
         writer.writeheader()
 
         try:
-            for episode in range(100):
+            for episode in range(5000):
 
                 reward_result = env.run(agent)
                 q_online_results = agent.get_and_reinit_q_online_results()
@@ -91,7 +92,8 @@ def main():
                 })
 
         finally:
-            agent.brain.model.save(fileNetPath)
+            pass
+            #agent.brain.model.save(fileNetPath)
 
     print("End\n")
 
