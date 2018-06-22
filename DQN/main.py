@@ -12,6 +12,10 @@ from environment import Environment
 from agent import Agent
 from randomAgent import RandomAgent
 
+from timeit import default_timer as timer
+
+start = 0
+end = 0
 
 def get_rand_agent_memory(env, actionsCount):
     randAgent = RandomAgent(actionsCount)
@@ -78,7 +82,8 @@ def main():
         writer.writeheader()
 
         try:
-            for episode in range(5000):
+            start = timer()
+            for episode in range(150):
 
                 reward_result = env.run(agent)
                 q_online_results = agent.get_and_reinit_q_online_results()
@@ -92,9 +97,11 @@ def main():
                 })
 
         finally:
+            end = timer()
             pass
             #agent.brain.model.save(fileNetPath)
-
+        elapsed_seconds = end - start
+        csvfile.write(str(elapsed_seconds))
     print("End\n")
 
 if __name__ == "__main__":
