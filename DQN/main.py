@@ -5,6 +5,7 @@ import numpy as np
 
 import csv
 import datetime as dt
+import random
 
 from environment import Environment
 from agent import Agent
@@ -21,7 +22,7 @@ def get_rand_agent_memory(env, actionsCount):
 
 def init_CartPole():
     CartPoleProb = "CartPole-v0"
-    env = Environment(CartPoleProb, normalize=False, render=True)
+    env = Environment(CartPoleProb, normalize=False, render=False)
 
     stateDataCount = env.env.observation_space.shape[0]
     actionsCount = env.env.action_space.n
@@ -29,7 +30,7 @@ def init_CartPole():
     print("\nState Data Count:", stateDataCount)
     print("Action Count:", actionsCount)
 
-    agent = Agent(stateDataCount, actionsCount, min_eps=0.01)
+    agent = Agent(stateDataCount, actionsCount, double_q_learning=False, min_eps=0.01)
     agent.memory = get_rand_agent_memory(env, actionsCount)
 
     return agent, env
@@ -40,7 +41,7 @@ def init_CartPole():
 
 def init_MountainCar():
     MountainProb ="MountainCarContinuous-v0"
-    env = Environment(MountainProb, normalize=True, render=True)
+    env = Environment(MountainProb, normalize=True, render=False)
 
     stateDataCount = env.env.observation_space.shape[0]
     actionsCount = env.env.action_space.shape[0]
@@ -55,40 +56,39 @@ def init_MountainCar():
 
 
 def main():
+    prefix = "test-seed"
+
+    random.seed(42)
     agent, env = init_CartPole()
 
     print("\nStart")
 
     # initialize the csv 
     folder = 'results/'
-    nameResult = env.name + '-' + dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    nameResult = prefix + '-' + env.name + '-' + dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
     fileNetPath = folder + nameResult + '.h5'
     fileCsvPath = folder + nameResult + '.csv'
 
     with open(fileCsvPath, 'w', newline='') as csvfile:
-        fieldnames = ['episode', 'reward', 'q-value']
+        fieldnames = ['episode', 'reward', 'q-online-value', 'q-target-value']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
         try:
-            results = []
-
-            for episode in range(5000):
+            for episode in range(100):
 
                 reward_result = env.run(agent)
-                q_results = agent.get_and_reinit_q_results()
-                results.append({
+                q_online_results = agent.get_and_reinit_q_online_results()
+                q_target_results = agent.get_and_reinit_q_target_results()
+
+                writer.writerow({
                     fieldnames[0]: episode + 1,
                     fieldnames[1]: reward_result,
-                    fieldnames[2]: np.mean(q_results)
+                    fieldnames[2]: np.mean(q_online_results),
+                    fieldnames[3]: np.mean(q_target_results)
                 })
 
-                if episode % 250 == 0:
-                    writer.writerows(results)
-                    results = []
-
         finally:
-            writer.writerows(results)
             agent.brain.model.save(fileNetPath)
 
     print("End\n")
