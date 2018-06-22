@@ -60,6 +60,7 @@ def main():
 
     random.seed(42)
     agent, env = init_CartPole()
+    env.set_seed(42)
 
     print("\nStart")
 
