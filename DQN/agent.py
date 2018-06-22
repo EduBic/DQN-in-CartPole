@@ -28,8 +28,13 @@ class Agent:
                  min_eps=0.01,
                  update_target_frequency=800,
                  mLambda=0.001,
+<<<<<<< HEAD
+                 memory_capacity=10000,
+                 mem_batch_size=128,
+=======
                  memory_capacity=100000,
                  mem_batch_size=64,
+>>>>>>> c06aa74988e9d66b773777f4f5846177c81bc1eb
                  gamma=0.99):
 
         self.double_q_learning = double_q_learning
