@@ -28,7 +28,7 @@ class Agent:
                  update_target_frequency=1000,
                  mLambda=0.001,
                  memory_capacity=10000,
-                 mem_batch_size=64,
+                 mem_batch_size=128,
                  gamma=0.99):
 
         self.mLambda = mLambda

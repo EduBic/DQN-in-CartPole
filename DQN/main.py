@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import gym
 import numpy as np
 
+
 import csv
 import datetime as dt
 
@@ -20,7 +21,7 @@ def get_rand_agent_memory(env, actionsCount):
 
 
 def init_CartPole():
-    CartPoleProb = "CartPole-v0"
+    CartPoleProb = "CartPole-v1"
     env = Environment(CartPoleProb, normalize=False, render=False)
 
     stateDataCount = env.env.observation_space.shape[0]
