@@ -22,17 +22,8 @@ def get_rand_agent_memory(env, actionsCount):
 
 
 def init_CartPole():
-<<<<<<< HEAD
-    CartPoleProb = "CartPole-v1"
-    env = Environment(CartPoleProb, normalize=False, render=False)
-=======
     CartPoleProb = "CartPole-v0"
-<<<<<<< HEAD
-    env = Environment(CartPoleProb, normalize=False, render=True)
->>>>>>> 86d7434ae29396edf9d637dc07463a8a986d7d67
-=======
     env = Environment(CartPoleProb, normalize=False, render=False)
->>>>>>> c06aa74988e9d66b773777f4f5846177c81bc1eb
 
     stateDataCount = env.env.observation_space.shape[0]
     actionsCount = env.env.action_space.n
