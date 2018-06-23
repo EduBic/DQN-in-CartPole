@@ -60,7 +60,7 @@ class Environment:
             tot_reward += reward
 
         #print("Total reward:", tot_reward)
-        return tot_reward
+        return tot_reward, agent.steps
 
     def set_seed(self, seed):
         self.env.seed(seed)

@@ -57,12 +57,14 @@ def init_MountainCar():
 
 
 def main():
-    prefix = "test-seed"
 
-    random.seed(42)
-    np.random.seed(42)
+    seed = 42
+    prefix = "DQN-seed-" + str(seed)
+
+    random.seed(seed)
+    np.random.seed(seed)
     agent, env = init_CartPole()
-    env.set_seed(42)
+    env.set_seed(seed)
 
     print("\nStart")
 
@@ -73,27 +75,31 @@ def main():
     fileCsvPath = folder + nameResult + '.csv'
 
     with open(fileCsvPath, 'w', newline='') as csvfile:
-        fieldnames = ['episode', 'reward', 'q-online-value', 'q-target-value']
+        fieldnames = ['episode', 'steps', 'reward', 'q-online-value', 'q-target-value']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
         try:
-            for episode in range(5000):
+            prev_tot_steps = 0
+            for episode in range(10000):
 
-                reward_result = env.run(agent)
+                reward_result, tot_steps = env.run(agent)
                 q_online_results = agent.get_and_reinit_q_online_results()
                 q_target_results = agent.get_and_reinit_q_target_results()
 
+                step_per_episode = tot_steps - prev_tot_steps
+                prev_tot_steps = tot_steps
+
                 writer.writerow({
                     fieldnames[0]: episode + 1,
-                    fieldnames[1]: reward_result,
-                    fieldnames[2]: np.mean(q_online_results),
-                    fieldnames[3]: np.mean(q_target_results)
+                    fieldnames[1]: step_per_episode,
+                    fieldnames[2]: reward_result,
+                    fieldnames[3]: np.mean(q_online_results),
+                    fieldnames[4]: np.mean(q_target_results)
                 })
 
         finally:
-            pass
-            #agent.brain.model.save(fileNetPath)
+            agent.brain.model.save(fileNetPath)
 
     print("End\n")
 
