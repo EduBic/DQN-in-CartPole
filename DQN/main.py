@@ -12,6 +12,10 @@ from environment import Environment
 from agent import Agent
 from randomAgent import RandomAgent
 
+from timeit import default_timer as timer
+
+start = 0
+end = 0
 
 def get_rand_agent_memory(env, actionsCount):
     randAgent = RandomAgent(actionsCount)
@@ -81,6 +85,8 @@ def main():
 
         try:
             prev_tot_steps = 0
+            start = timer()
+
             for episode in range(10000):
 
                 reward_result, tot_steps = env.run(agent)
@@ -100,7 +106,12 @@ def main():
 
         finally:
             agent.brain.model.save(fileNetPath)
-
+            
+            end = timer()
+            elapsed_seconds = end - start
+            
+            csvfile.write(str(elapsed_seconds))
+    
     print("End\n")
 
 if __name__ == "__main__":
