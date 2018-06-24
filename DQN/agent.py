@@ -67,17 +67,21 @@ class Agent:
     def observe(self, sample): # (s, a, r, s') tupla
         self.memory.add(sample)
 
-        if self.steps % self.update_target_frequency == 0:
-            self.brain.update_target_model()
-            print("Steps", self.steps)
+        if self.double_q_learning:  # For Double DQN
 
-        if self.double_q_learning:
+            if self.steps % self.update_target_frequency == 0:
+                self.brain.update_target_model()
+                print("Steps (double)", self.steps) # DEBUG
+
             pred_target = self.brain.predictOne_target(self.q_state)
             self.q_target_results = np.append(self.q_target_results, pred_target)
+        
+        else: # For DQN
+            if self.steps % 1000 == 0:
+                print("Steps", self.steps)
 
         pred_online = self.brain.predictOne(self.q_state)
         self.q_online_results = np.append(self.q_online_results, pred_online)
-
 
         # Decay the learning
         self.steps += 1

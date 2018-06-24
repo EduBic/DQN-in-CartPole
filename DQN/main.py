@@ -35,13 +35,10 @@ def init_CartPole():
     print("\nState Data Count:", stateDataCount)
     print("Action Count:", actionsCount)
 
-    agent = Agent(stateDataCount, actionsCount, double_q_learning=False, min_eps=0.01)
+    agent = Agent(stateDataCount, actionsCount, double_q_learning=True, min_eps=0.01)
     agent.memory = get_rand_agent_memory(env, actionsCount)
 
     return agent, env
-
-
-#def run_alg(stateDataCount, actionsCount):
 
 
 def init_MountainCar():
@@ -62,8 +59,8 @@ def init_MountainCar():
 
 def main():
 
-    seed = 42
-    prefix = "DQN-seed-" + str(seed)
+    seed = 52
+    prefix = "doubleDQN-2-seed-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
@@ -90,6 +87,7 @@ def main():
             for episode in range(10000):
 
                 reward_result, tot_steps = env.run(agent)
+
                 q_online_results = agent.get_and_reinit_q_online_results()
                 q_target_results = agent.get_and_reinit_q_target_results()
 

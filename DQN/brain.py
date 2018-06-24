@@ -48,12 +48,12 @@ class Brain:
 
     def predict(self, state):
         return self.model.predict(state)
-    
-    def predict_target(self, state):
-        return self.target_model.predict(state)
 
     def predictOne(self, state):
         return self.predict(state.reshape(1, self.stateDataCount)).flatten()
+    
+    def predict_target(self, state):
+        return self.target_model.predict(state)
 
     def predictOne_target(self, state):
         return self.predict_target(state.reshape(1, self.stateDataCount)).flatten()

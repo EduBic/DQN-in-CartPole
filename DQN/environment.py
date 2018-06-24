@@ -45,7 +45,7 @@ class Environment:
             #     a_ = 2 # move right
 
             new_state, reward, done, _ = self.env.step(action)
-            if self.normalize_on: 
+            if self.normalize_on:
                 new_state = self.normalize(new_state)
 
             if done:
