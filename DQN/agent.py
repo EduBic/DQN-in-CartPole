@@ -53,12 +53,16 @@ class Agent:
 
         # state to test q value
         self.q_state = np.array([-0.01335408, -0.04600273, -0.00677248, 0.01517507])
-        self.q_target_results = np.array([])
-        self.q_online_results = np.array([])
+
+        self.env_max_step = 200 # Only for CartPole environment
+        self.index_results = 0
+
+        self.q_target_results = np.zeros(self.env_max_step)
+        self.q_online_results = np.zeros(self.env_max_step)
 
         self.epoch = mem_batch_size # DEBUG
-        self.q_target_epoch_results = np.empty([self.epoch])
-        self.q_online_epoch_results = np.empty([self.epoch])
+        self.q_target_epoch_results = np.zeros(self.epoch)
+        self.q_online_epoch_results = np.zeros(self.epoch)
         self.mean_q_target_epoch = np.array([])
         self.mean_q_online_epoch = np.array([])
 
@@ -81,23 +85,23 @@ class Agent:
                 print("Steps (double)", self.steps) # DEBUG
 
             pred_target = (self.brain.predictOne_target(self.q_state)).item(action)
-            if math.isnan(pred_target): print("Ah :/ a NaN")
-            self.q_target_results = np.append(self.q_target_results, pred_target)
-            self.q_target_epoch_results = np.append(self.q_target_epoch_results, pred_target)
+            self.q_target_results[self.index_results] = pred_target 
+            self.q_target_epoch_results[(self.steps - 1) % self.epoch] = pred_target
 
             if self.steps % self.epoch == 0:
                 self.mean_q_target_epoch = np.append(self.mean_q_target_epoch, 
                                                 np.mean(self.q_target_epoch_results))
-                self.q_target_epoch_results = np.empty([self.epoch])
+                self.q_target_epoch_results = np.zeros(self.epoch)
         
         else: # For DQN
             if self.steps % 1000 == 0:
                 print("Steps", self.steps)
 
         pred_online = self.brain.predictOne(self.q_state).item(action)
-        if math.isnan(pred_target): print("Ah :/ a NaN")
-        self.q_online_results = np.append(self.q_online_results, pred_online)
-        self.q_online_epoch_results = np.append(self.q_online_epoch_results, pred_online)
+        self.q_online_results[self.index_results] = pred_online
+        self.q_online_epoch_results[(self.steps - 1) % self.epoch] = pred_online
+
+        self.index_results += 1
 
         if self.steps % self.epoch == 0:
             #print("New epoch", self.mean_q_online_epoch)
@@ -150,12 +154,14 @@ class Agent:
 
     def get_and_reinit_q_target_results(self):
         res = np.copy(self.q_target_results)
-        self.q_target_results = np.array([])
+        self.q_target_results = np.zeros(self.env_max_step)
+        self.index_results = 0
         return res
 
     def get_and_reinit_q_online_results(self):
         res = np.copy(self.q_online_results)
-        self.q_online_results = np.array([])
+        self.q_online_results = np.zeros(self.env_max_step)
+        self.index_results = 0
         return res
 
     def get_q_value_means_epoch(self):

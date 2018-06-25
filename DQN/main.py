@@ -59,7 +59,7 @@ def write_q_values_epoch(fileCsvPath, mean_q_online_values, mean_q_target_values
 def main():
 
     seed = 42
-    prefix = "test-DQN-2-seed-" + str(seed)
+    prefix = "mse-DQN-seed-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
