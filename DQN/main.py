@@ -47,11 +47,11 @@ def write_q_values_epoch(fileCsvPath, mean_q_online_values, mean_q_target_values
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
-        for epoch in range(len(mean_q_online_values)):
+        for epoch in range(mean_q_online_values.size):
             writer.writerow({
                 fieldnames[0]: epoch + 1,
-                fieldnames[1]: mean_q_online_values[epoch],
-                fieldnames[2]: mean_q_target_values[epoch]
+                fieldnames[1]: mean_q_online_values.item(epoch),
+                fieldnames[2]: mean_q_target_values.item(epoch)
             })
 
 
@@ -83,7 +83,7 @@ def main():
             prev_tot_steps = 0
             start = timer()
 
-            for episode in range(2000):
+            for episode in range(1000):
 
                 reward_result, tot_steps = env.run(agent)
                 #print("Tot. reward", reward_result)
@@ -103,7 +103,7 @@ def main():
                 })
 
         finally:
-            agent.brain.model.save(fileNetPath)
+            #agent.brain.model.save(fileNetPath)
             
             end = timer()
             elapsed_seconds = end - start
@@ -111,8 +111,7 @@ def main():
             csvfile.write(str(elapsed_seconds))
 
             mean_q_online, mean_q_target = agent.get_q_value_means_epoch()
-            write_q_values_epoch(folder + nameResult + "-epochs.csv", 
-                                mean_q_online, mean_q_target)
+            write_q_values_epoch(folder + nameResult + "-epochs.csv", mean_q_online, mean_q_target)
     
     print("End\n")
 

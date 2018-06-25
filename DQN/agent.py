@@ -70,6 +70,9 @@ class Agent:
 
     def observe(self, sample): # (s, a, r, s') tupla
         self.memory.add(sample)
+        self.steps += 1
+
+        action = sample[1]
 
         if self.double_q_learning:  # For Double DQN
 
@@ -77,28 +80,32 @@ class Agent:
                 self.brain.update_target_model()
                 print("Steps (double)", self.steps) # DEBUG
 
-            pred_target = self.brain.predictOne_target(self.q_state)
+            pred_target = (self.brain.predictOne_target(self.q_state)).item(action)
+            if math.isnan(pred_target): print("Ah :/ a NaN")
             self.q_target_results = np.append(self.q_target_results, pred_target)
             self.q_target_epoch_results = np.append(self.q_target_epoch_results, pred_target)
 
             if self.steps % self.epoch == 0:
-                self.mean_q_target_epoch = np.mean(self.q_target_epoch_results)
+                self.mean_q_target_epoch = np.append(self.mean_q_target_epoch, 
+                                                np.mean(self.q_target_epoch_results))
                 self.q_target_epoch_results = np.empty([self.epoch])
         
         else: # For DQN
             if self.steps % 1000 == 0:
                 print("Steps", self.steps)
 
-        pred_online = self.brain.predictOne(self.q_state)
+        pred_online = self.brain.predictOne(self.q_state).item(action)
+        if math.isnan(pred_target): print("Ah :/ a NaN")
         self.q_online_results = np.append(self.q_online_results, pred_online)
         self.q_online_epoch_results = np.append(self.q_online_epoch_results, pred_online)
 
         if self.steps % self.epoch == 0:
-            self.mean_q_online_epoch = np.mean(self.q_online_epoch_results)
+            #print("New epoch", self.mean_q_online_epoch)
+            self.mean_q_online_epoch = np.append(self.mean_q_online_epoch, 
+                                                np.mean(self.q_online_epoch_results))
             self.q_online_epoch_results = np.empty([self.epoch])
 
         # Decay the learning
-        self.steps += 1
         self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(- self.mLambda * self.steps)
 
 
