@@ -17,8 +17,8 @@ from timeit import default_timer as timer
 start = 0
 end = 0
 
-def get_rand_agent_memory(env, actionsCount):
-    randAgent = RandomAgent(actionsCount)
+def get_rand_agent_memory(env, actionsCount, memory_capacity):
+    randAgent = RandomAgent(actionsCount, memory_capacity)
     while randAgent.memory.is_full():
         env.run(randAgent)
 
@@ -35,32 +35,31 @@ def init_CartPole():
     print("\nState Data Count:", stateDataCount)
     print("Action Count:", actionsCount)
 
-    agent = Agent(stateDataCount, actionsCount, double_q_learning=True, min_eps=0.01)
-    agent.memory = get_rand_agent_memory(env, actionsCount)
+    agent = Agent(stateDataCount, actionsCount, double_q_learning=True, min_eps=0.01, mLambda=0.001)
+    agent.memory = get_rand_agent_memory(env, actionsCount, agent.memory_capacity)
 
     return agent, env
 
+def write_q_values_epoch(fileCsvPath, mean_q_online_values, mean_q_target_values):
 
-def init_MountainCar():
-    MountainProb ="MountainCarContinuous-v0"
-    env = Environment(MountainProb, normalize=True, render=False)
+    with open(fileCsvPath, 'w', newline='') as csvfile:
+        fieldnames = ['epoch', 'q-online-value', 'q-target-value']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
 
-    stateDataCount = env.env.observation_space.shape[0]
-    actionsCount = env.env.action_space.shape[0]
+        for epoch in range(len(mean_q_online_values)):
+            writer.writerow({
+                fieldnames[0]: epoch + 1,
+                fieldnames[1]: mean_q_online_values[epoch],
+                fieldnames[2]: mean_q_target_values[epoch]
+            })
 
-    print("\nState Data Count:", stateDataCount)
-    print("Action Count:", actionsCount)
-
-    agent = Agent(stateDataCount, actionsCount, min_eps=0.1)
-    agent.memory = get_rand_agent_memory(env, actionsCount)
-
-    return agent, env
 
 
 def main():
 
-    seed = 52
-    prefix = "doubleDQN-2-seed-" + str(seed)
+    seed = 42
+    prefix = "test-DQN-2-seed-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
@@ -84,9 +83,10 @@ def main():
             prev_tot_steps = 0
             start = timer()
 
-            for episode in range(10000):
+            for episode in range(2000):
 
                 reward_result, tot_steps = env.run(agent)
+                #print("Tot. reward", reward_result)
 
                 q_online_results = agent.get_and_reinit_q_online_results()
                 q_target_results = agent.get_and_reinit_q_target_results()
@@ -109,6 +109,10 @@ def main():
             elapsed_seconds = end - start
             
             csvfile.write(str(elapsed_seconds))
+
+            mean_q_online, mean_q_target = agent.get_q_value_means_epoch()
+            write_q_values_epoch(folder + nameResult + "-epochs.csv", 
+                                mean_q_online, mean_q_target)
     
     print("End\n")
 

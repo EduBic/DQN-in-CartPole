@@ -39,7 +39,7 @@ class Brain:
         optimizer = RMSprop(lr=Brain.LEARNING_RATE)
 
         # Set loss function
-        model.compile(loss=huber_loss, optimizer=optimizer)
+        model.compile(loss='mse', optimizer=optimizer)
 
         return model
 

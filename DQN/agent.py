@@ -20,8 +20,6 @@ from memory import Memory
 
 class Agent:
 
-    memory_capacity=10000
-
     def __init__(self, stateDataCount, actionCount,
                  double_q_learning=True,
                  max_eps=1,
@@ -58,6 +56,12 @@ class Agent:
         self.q_target_results = np.array([])
         self.q_online_results = np.array([])
 
+        self.epoch = mem_batch_size # DEBUG
+        self.q_target_epoch_results = np.empty([self.epoch])
+        self.q_online_epoch_results = np.empty([self.epoch])
+        self.mean_q_target_epoch = np.array([])
+        self.mean_q_online_epoch = np.array([])
+
     def act(self, curr_state):
         if random.random() < self.epsilon:
             return random.randint(0, self.actionCount - 1)
@@ -75,6 +79,11 @@ class Agent:
 
             pred_target = self.brain.predictOne_target(self.q_state)
             self.q_target_results = np.append(self.q_target_results, pred_target)
+            self.q_target_epoch_results = np.append(self.q_target_epoch_results, pred_target)
+
+            if self.steps % self.epoch == 0:
+                self.mean_q_target_epoch = np.mean(self.q_target_epoch_results)
+                self.q_target_epoch_results = np.empty([self.epoch])
         
         else: # For DQN
             if self.steps % 1000 == 0:
@@ -82,6 +91,11 @@ class Agent:
 
         pred_online = self.brain.predictOne(self.q_state)
         self.q_online_results = np.append(self.q_online_results, pred_online)
+        self.q_online_epoch_results = np.append(self.q_online_epoch_results, pred_online)
+
+        if self.steps % self.epoch == 0:
+            self.mean_q_online_epoch = np.mean(self.q_online_epoch_results)
+            self.q_online_epoch_results = np.empty([self.epoch])
 
         # Decay the learning
         self.steps += 1
@@ -136,3 +150,6 @@ class Agent:
         res = np.copy(self.q_online_results)
         self.q_online_results = np.array([])
         return res
+
+    def get_q_value_means_epoch(self):
+        return self.mean_q_online_epoch, self.mean_q_target_epoch
