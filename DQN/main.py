@@ -59,7 +59,7 @@ def write_q_values_epoch(fileCsvPath, mean_q_online_values, mean_q_target_values
 def main():
 
     seed = 42
-    prefix = "mse-DQN-seed-" + str(seed)
+    prefix = "huber-DQN-8000-seed-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
@@ -82,7 +82,7 @@ def main():
         try:
             start = timer()
 
-            for episode in range(1000):
+            for episode in range(8000):
 
                 reward_result = env.run(agent)
                 #print("Tot. reward", reward_result)
