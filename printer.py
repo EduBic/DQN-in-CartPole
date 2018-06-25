@@ -44,11 +44,27 @@ def print_q_value(q_mat):
     plt.show()
 
 
+def print_meam_epoch_q_value(mean_q_online, mean_q_target):
+    plt.clf()
+
+    x = len(mean_q_online)
+
+    epochs = range(0, x)
+
+    plt.plot(epochs, mean_q_online, 'r', label='q_online')
+    plt.plot(epochs, mean_q_target, 'b--', label='q_target')
+
+    plt.title('Mean epoch q_value')
+    plt.xlabel('Epoch')
+    plt.ylabel('Q-Value')
+    plt.legend()
+    plt.show()
+
 def main():
     # header:
     # step , reward
 
-    num_files = 2
+    '''num_files = 2
     rewards = [0 for i in range(num_files)]
     q_value = [0 for i in range(num_files)]
 
@@ -63,7 +79,22 @@ def main():
     q_value[1] = my_csv[0:, 4]
 
     print_rewards(rewards)
-    print_q_value(q_value)
+    print_q_value(q_value)'''
+
+    q_target = []
+    q_online = []
+
+
+    folder = 'csvDQN/'
+    name_file = 'ccc64.csv'
+
+    # epoch, q_online, q_target
+
+    my_csv = genfromtxt(folder + name_file, delimiter=',')
+    q_online = my_csv[:, 1]
+    q_target = my_csv[:, 2]
+
+    print_meam_epoch_q_value(q_online, q_target)
 
 
 if __name__ == "__main__":
