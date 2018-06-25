@@ -75,35 +75,30 @@ def main():
     fileCsvPath = folder + nameResult + '.csv'
 
     with open(fileCsvPath, 'w', newline='') as csvfile:
-        fieldnames = ['episode', 'steps', 'reward', 'q-online-value', 'q-target-value']
+        fieldnames = ['episode', 'reward', 'q-online-value', 'q-target-value']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
         try:
-            prev_tot_steps = 0
             start = timer()
 
             for episode in range(1000):
 
-                reward_result, tot_steps = env.run(agent)
+                reward_result = env.run(agent)
                 #print("Tot. reward", reward_result)
 
                 q_online_results = agent.get_and_reinit_q_online_results()
                 q_target_results = agent.get_and_reinit_q_target_results()
 
-                step_per_episode = tot_steps - prev_tot_steps
-                prev_tot_steps = tot_steps
-
                 writer.writerow({
                     fieldnames[0]: episode + 1,
-                    fieldnames[1]: step_per_episode,
-                    fieldnames[2]: reward_result,
-                    fieldnames[3]: np.mean(q_online_results),
-                    fieldnames[4]: np.mean(q_target_results)
+                    fieldnames[1]: reward_result,
+                    fieldnames[2]: np.mean(q_online_results),
+                    fieldnames[3]: np.mean(q_target_results)
                 })
 
         finally:
-            #agent.brain.model.save(fileNetPath)
+            agent.brain.model.save(fileNetPath)
             
             end = timer()
             elapsed_seconds = end - start
