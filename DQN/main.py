@@ -43,9 +43,7 @@ def init_CartPole():
 def write_q_values_epoch(fileCsvPath, mean_q_online_values, mean_q_target_values):
 
     with open(fileCsvPath, 'w', newline='') as csvfile:
-        fieldnames = ['epoch', 'q-online-value', 'q-target-value']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
+        
 
         for epoch in range(mean_q_online_values.size):
             writer.writerow({
@@ -59,7 +57,7 @@ def write_q_values_epoch(fileCsvPath, mean_q_online_values, mean_q_target_values
 def main():
 
     seed = 42
-    prefix = "huber-DQN-8000-seed-" + str(seed)
+    prefix = "test-mse-DQN-seed-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
@@ -73,16 +71,23 @@ def main():
     nameResult = prefix + '-' + env.name + '-' + dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
     fileNetPath = folder + nameResult + '.h5'
     fileCsvPath = folder + nameResult + '.csv'
+    fileCsvPath_epoch = folder + nameResult + '-epoch.csv'
 
-    with open(fileCsvPath, 'w', newline='') as csvfile:
+    with open(fileCsvPath, 'w', newline='') as csvfile, open(fileCsvPath_epoch, 'w', newline='') as csvFile_epoch:
         fieldnames = ['episode', 'reward', 'q-online-value', 'q-target-value']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
+        fieldnames_ep = ['epoch', 'q-online-value', 'q-target-value', 'epsilon']
+        writer_ep = csv.DictWriter(csvFile_epoch, fieldnames=fieldnames_ep)
+        writer_ep.writeheader()
+
+        agent.set_writer_epochs(writer_ep)
+
         try:
             start = timer()
 
-            for episode in range(8000):
+            for episode in range(3500):
 
                 reward_result = env.run(agent)
                 #print("Tot. reward", reward_result)
@@ -104,9 +109,7 @@ def main():
             elapsed_seconds = end - start
             
             csvfile.write(str(elapsed_seconds))
-
-            mean_q_online, mean_q_target = agent.get_q_value_means_epoch()
-            write_q_values_epoch(folder + nameResult + "-epochs.csv", mean_q_online, mean_q_target)
+            agent.set_writer_epochs(None)
     
     print("End\n")
 

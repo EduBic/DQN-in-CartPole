@@ -76,7 +76,7 @@ class Agent:
         self.memory.add(sample)
         self.steps += 1
 
-        action = sample[1]
+        curr_state = sample[0]
 
         if self.double_q_learning:  # For Double DQN
 
@@ -84,33 +84,25 @@ class Agent:
                 self.brain.update_target_model()
                 print("Steps (double)", self.steps) # DEBUG
 
-            pred_target = (self.brain.predictOne_target(self.q_state)).item(action)
-            self.q_target_results[self.index_results] = pred_target 
-            self.q_target_epoch_results[(self.steps - 1) % self.epoch] = pred_target
-
-            if self.steps % self.epoch == 0:
-                self.mean_q_target_epoch = np.append(self.mean_q_target_epoch, 
-                                                np.mean(self.q_target_epoch_results))
-                self.q_target_epoch_results = np.zeros(self.epoch)
+            max_pred_target = np.amax(self.brain.predictOne_target(curr_state))
+            self.q_target_results[self.index_results] = max_pred_target
+            self.q_target_epoch_results[(self.steps - 1) % self.epoch] = max_pred_target
         
         else: # For DQN
             if self.steps % 1000 == 0:
                 print("Steps", self.steps)
 
-        pred_online = self.brain.predictOne(self.q_state).item(action)
-        self.q_online_results[self.index_results] = pred_online
-        self.q_online_epoch_results[(self.steps - 1) % self.epoch] = pred_online
+        max_pred_online = np.amax(self.brain.predictOne(curr_state))
+        self.q_online_results[self.index_results] = max_pred_online
+        self.q_online_epoch_results[(self.steps - 1) % self.epoch] = max_pred_online
 
         self.index_results += 1
 
-        if self.steps % self.epoch == 0:
-            #print("New epoch", self.mean_q_online_epoch)
-            self.mean_q_online_epoch = np.append(self.mean_q_online_epoch, 
-                                                np.mean(self.q_online_epoch_results))
-            self.q_online_epoch_results = np.empty([self.epoch])
-
         # Decay the learning
         self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(- self.mLambda * self.steps)
+
+        if self.steps % self.epoch == 0:
+            self.write_epoch()
 
 
     def replay(self):
@@ -152,6 +144,8 @@ class Agent:
 
         self.brain.train(x, y)
 
+    # Logging methods
+
     def get_and_reinit_q_target_results(self):
         res = np.copy(self.q_target_results)
         self.q_target_results = np.zeros(self.env_max_step)
@@ -164,5 +158,14 @@ class Agent:
         self.index_results = 0
         return res
 
-    def get_q_value_means_epoch(self):
-        return self.mean_q_online_epoch, self.mean_q_target_epoch
+    def set_writer_epochs(self, writer):
+        self.writer = writer
+
+    def write_epoch(self):
+        #print("Write epochs", value)
+        self.writer.writerow({
+            self.writer.fieldnames[0]: self.steps / self.epoch,
+            self.writer.fieldnames[1]: np.mean(self.q_online_epoch_results),
+            self.writer.fieldnames[2]: np.mean(self.q_target_epoch_results),
+            self.writer.fieldnames[3]: self.epsilon
+        })
