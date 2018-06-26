@@ -40,20 +40,6 @@ def init_CartPole():
 
     return agent, env
 
-def write_q_values_epoch(fileCsvPath, mean_q_online_values, mean_q_target_values):
-
-    with open(fileCsvPath, 'w', newline='') as csvfile:
-        
-
-        for epoch in range(mean_q_online_values.size):
-            writer.writerow({
-                fieldnames[0]: epoch + 1,
-                fieldnames[1]: mean_q_online_values.item(epoch),
-                fieldnames[2]: mean_q_target_values.item(epoch)
-            })
-
-
-
 def main():
 
     seed = 42
