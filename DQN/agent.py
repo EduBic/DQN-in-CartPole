@@ -21,14 +21,14 @@ from memory import Memory
 class Agent:
 
     def __init__(self, stateDataCount, actionCount,
-                 double_q_learning=True,
-                 max_eps=1,
-                 min_eps=0.01,
-                 update_target_frequency=800,
-                 mLambda=0.001,
-                 memory_capacity=100000,
-                 mem_batch_size=64,
-                 gamma=0.99):
+                 double_q_learning,
+                 max_eps,
+                 min_eps,
+                 update_target_frequency,
+                 mLambda,
+                 memory_capacity,
+                 mem_batch_size,
+                 gamma):
 
         self.double_q_learning = double_q_learning
 

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import gym
 import numpy as np
 
-
+import os
 import csv
 import datetime as dt
 import random
@@ -25,7 +25,7 @@ def get_rand_agent_memory(env, actionsCount, memory_capacity):
     return randAgent.memory
 
 
-def init_CartPole():
+def init_CartPole(double_enable):
     CartPoleProb = "CartPole-v0"
     env = Environment(CartPoleProb, normalize=False, render=False)
 
@@ -35,26 +35,47 @@ def init_CartPole():
     print("\nState Data Count:", stateDataCount)
     print("Action Count:", actionsCount)
 
-    agent = Agent(stateDataCount, actionsCount, double_q_learning=True, min_eps=0.01, mLambda=0.001)
+    agent = Agent(stateDataCount, actionsCount, 
+                double_q_learning=double_enable, 
+                max_eps=1,
+                min_eps=0.01, 
+                update_target_frequency=800,
+                memory_capacity=10000,
+                mem_batch_size=64,
+                mLambda=0.001,
+                gamma=0.99)
     agent.memory = get_rand_agent_memory(env, actionsCount, agent.memory_capacity)
 
     return agent, env
 
 def main():
 
-    seed = 42
-    prefix = "test-mse-DQN-seed-" + str(seed)
+    # Settings
+    seed = 32
+    double_enable = True
+
+    method = "No-method"
+    if double_enable: 
+        method = "DDQN"
+    else:
+        method = "DQN"
+
+    prefix = method + "-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
-    agent, env = init_CartPole()
+    agent, env = init_CartPole(double_enable)
     env.set_seed(seed)
 
     print("\nStart")
 
     # initialize the csv 
     folder = 'results/'
-    nameResult = prefix + '-' + env.name + '-' + dt.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+
+    if not os.path.exists(folder): 
+        os.makedirs(folder)
+
+    nameResult = prefix + '-' + dt.datetime.now().strftime("%m-%dT%H-%M")
     fileNetPath = folder + nameResult + '.h5'
     fileCsvPath = folder + nameResult + '.csv'
     fileCsvPath_epoch = folder + nameResult + '-epoch.csv'
@@ -73,7 +94,7 @@ def main():
         try:
             start = timer()
 
-            for episode in range(3500):
+            for episode in range(5000):
 
                 reward_result = env.run(agent)
                 #print("Tot. reward", reward_result)
@@ -94,7 +115,8 @@ def main():
             end = timer()
             elapsed_seconds = end - start
             
-            csvfile.write(str(elapsed_seconds))
+            #csvfile.write(str(elapsed_seconds))
+            print("Total time (s)", str(elapsed_seconds))
             agent.set_writer_epochs(None)
     
     print("End\n")
