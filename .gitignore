@@ -5,5 +5,4 @@ data/mnist/
 log/
 *.h5
 *.npy
-DQN/results/
 *.csv

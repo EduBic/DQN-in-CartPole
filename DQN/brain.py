@@ -31,8 +31,24 @@ class Brain:
     def _createModel(self):
         model = Sequential()
 
-        model.add(Dense(units=64, activation='relu', 
-            input_dim=self.stateDataCount))
+        deep_setting = False
+        print("Deep setting", deep_setting)
+        more_deep_setting = True
+        print("More deep setting", more_deep_setting)
+
+        if more_deep_setting:
+            model.add(Dense(units=32, activation='relu', 
+                            input_dim=self.stateDataCount))
+            model.add(Dense(units=16, activation='relu'))
+            model.add(Dense(units=8, activation='relu'))
+
+        else: # Normal layer (breath)
+            model.add(Dense(units=64, activation='relu', 
+                            input_dim=self.stateDataCount))
+            
+            if deep_setting:    # add one more hidden layer
+                model.add(Dense(units=32, activation='relu'))
+            
         model.add(Dense(units=self.actionCount, activation='linear'))
         
         # Learning method

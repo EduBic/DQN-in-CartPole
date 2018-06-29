@@ -51,7 +51,7 @@ def init_CartPole(double_enable):
 def main():
 
     # Settings
-    seed = 32
+    seed = 42
     double_enable = True
 
     method = "No-method"
@@ -60,13 +60,14 @@ def main():
     else:
         method = "DQN"
 
-    prefix = method + "-" + str(seed)
+    prefix = method + "-dd-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
     agent, env = init_CartPole(double_enable)
     env.set_seed(seed)
 
+    print("Seed set:", seed)
     print("\nStart")
 
     # initialize the csv 

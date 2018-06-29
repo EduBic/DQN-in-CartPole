@@ -133,14 +133,14 @@ class Agent:
             reward = observation[2]
             new_state = observation[3]
 
-            t = p[i]
+            target = p[i]
             if new_state is None:
-                t[action] = reward
+                target[action] = reward
             else:
-                t[action] = reward + self.gamma * np.amax(p_[i])
+                target[action] = reward + self.gamma * np.amax(p_[i])
 
             x[i] = state
-            y[i] = t
+            y[i] = target
 
         self.brain.train(x, y)
 
