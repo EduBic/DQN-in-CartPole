@@ -65,6 +65,7 @@ def plot_sessions(files):
     plt.legend()
     plt.show()
 
+
 def plot_mean_sessions(files):
 
     r_means = []
@@ -92,13 +93,32 @@ def plot_mean_sessions(files):
 
     plt.errorbar(x, r_means, std_array, linestyle='None', marker='o')
 
-    plt.title('Reward')
-    plt.xlabel('Episode')
-    plt.ylabel('Reward')
+    plt.title('Reward Mean')
+    plt.xlabel('Episodes of training')
+    plt.ylabel('Reward Mean')
     plt.legend()
     plt.show()
 
     #plt.show()
+
+
+def plot_loss(files):
+    plt.clf()
+
+    for nameFileCsv in files:
+        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
+        loss = csv_file[:, 4]
+
+        steps = range(0, len(loss))
+
+        plt.plot(steps, loss, label=nameFileCsv[:14], linewidth=0.4)
+
+    plt.title('Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
+
 
 def main():
 
@@ -124,12 +144,16 @@ def main():
         # "DQN-lambda-42-06-26T21-03",
         # "DDQN-32-lambda-06-27T17-06",
         # "DQN-lambda-52-06-27T09-40"
+
+        'DDQN-42-07-02T15-47-epoch'
     ]
 
-    game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
-    game_sessions.sort(key=len)
+    # game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
+    # game_sessions.sort(key=len)
 
-    plot_mean_sessions(game_sessions)
+    # plot_mean_sessions(game_sessions)
+
+    plot_loss(files)
 
     # step , reward, q-online, q-target
     # plot_rewards(files)
