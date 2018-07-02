@@ -30,6 +30,7 @@ models_dir = 'models/'
 
 RENDER = False
 
+
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
     randAgent = RandomAgent(actionsCount, memory_capacity)
     while randAgent.memory.is_full():
