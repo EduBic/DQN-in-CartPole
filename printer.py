@@ -3,10 +3,30 @@ from numpy import genfromtxt
 from os import listdir
 from os.path import isfile, join
 import re
+import numpy as np
 
 
 FOLDER = 'DQN/results/'
 SESSIONS_FOLDER = 'Gamer/sessions/07-02T16-26-44/'
+
+def plot_q_values(files, indeces, xlabel):
+    plt.clf()
+
+    for nameFileCsv in files:
+        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
+        q_value_online = csv_file[:, indeces[0]]
+        q_value_target = csv_file[:, indeces[1]]
+
+        steps = range(0, len(q_value_online))
+
+        plt.plot(steps, q_value_online, label=nameFileCsv[:14], linewidth=0.4)
+
+    plt.title("Q-values")
+    plt.xlabel(xlabel)
+    plt.ylabel('Q-value')
+    plt.legend()
+    plt.show()
+
 
 def plot_rewards(files):
     plt.clf()
@@ -24,6 +44,7 @@ def plot_rewards(files):
     plt.ylabel('Reward')
     plt.legend()
     plt.show()
+
 
 def plot_sessions(files):
     plt.clf()
@@ -44,24 +65,40 @@ def plot_sessions(files):
     plt.legend()
     plt.show()
 
-def plot_q_values(files, indeces, xlabel):
+def plot_mean_sessions(files):
+
+    r_means = []
+    x = []
+    std_array = []
+
+    i = 0
+    for nameFileCsv in files:
+        csv_file = genfromtxt(SESSIONS_FOLDER + nameFileCsv, delimiter=',')
+        rewards = csv_file[:, 1]
+
+        episodes = re.findall('_e(.*).csv', nameFileCsv)
+
+        r_means.append(rewards[1:].mean())
+
+        x.append(int(re.search(r'\d+', episodes[0]).group()))
+
+        std_array.append(rewards[1:].std())
+
+
     plt.clf()
 
-    for nameFileCsv in files:
-        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
-        q_value_online = csv_file[:, indeces[0]]
-        q_value_target = csv_file[:, indeces[1]]
+    # plt.plot(x, r_means, linewidth=0.4)
+    plt.xticks(x)
 
-        steps = range(0, len(q_value_online))
+    plt.errorbar(x, r_means, std_array, linestyle='None', marker='o')
 
-        plt.plot(steps, q_value_online, label=nameFileCsv[:14], linewidth=0.4)
-
-    plt.title("Q-values")
-    plt.xlabel(xlabel)
-    plt.ylabel('Q-value')
+    plt.title('Reward')
+    plt.xlabel('Episode')
+    plt.ylabel('Reward')
     plt.legend()
     plt.show()
 
+    #plt.show()
 
 def main():
 
@@ -92,7 +129,7 @@ def main():
     game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
     game_sessions.sort(key=len)
 
-    plot_sessions(game_sessions)
+    plot_mean_sessions(game_sessions)
 
     # step , reward, q-online, q-target
     # plot_rewards(files)
