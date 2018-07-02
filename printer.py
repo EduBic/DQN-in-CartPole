@@ -6,7 +6,7 @@ import re
 
 
 FOLDER = 'DQN/results/'
-SESSIONS_FOLDER = 'Gamer/sessions/'
+SESSIONS_FOLDER = 'Gamer/sessions/07-02T15-07-51/'
 
 def plot_rewards(files):
     plt.clf()
@@ -29,7 +29,7 @@ def plot_sessions(files):
     plt.clf()
 
     for nameFileCsv in files:
-        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
+        csv_file = genfromtxt(SESSIONS_FOLDER + nameFileCsv, delimiter=',')
         rewards = csv_file[:, 1]
 
         steps = range(0, len(rewards))
@@ -91,13 +91,9 @@ def main():
 
     game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
 
-    for g in game_sessions:
-        step = re.findall('_ *(.*).h5', g)
-        print(step[0])
-
     print(game_sessions)
 
-    #plot_rewards(game_sessions)
+    plot_sessions(game_sessions)
 
     # step , reward, q-online, q-target
     # plot_rewards(files)
