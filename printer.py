@@ -96,6 +96,7 @@ def main():
 
         # Double DQN
         #"DDQN-seed-52-2018-06-26T13-56-28",
+        "DDQN-42-07-02T13-21",
         #"DDQN-seed-42-2018-06-26T10-48-11",
         
         # Lambda = 0.00001 -> Epsilon need more steps to decay to 0.01
@@ -104,15 +105,15 @@ def main():
         # "DQN-lambda-52-06-27T09-40"
     ]
 
-    game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
+    # game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
 
-    for g in game_sessions:
-        step = re.findall('_ *(.*).h5', g)
-        print(step[0])
+    # for g in game_sessions:
+    #     step = re.findall('_ *(.*).h5', g)
+    #     print(step[0])
 
-    print(game_sessions)
+    # print(game_sessions)
 
-    plot_rewards(game_sessions)
+    #plot_rewards(game_sessions)
 
     # step , reward, q-online, q-target
     plot_rewards(files)
