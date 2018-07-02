@@ -21,41 +21,17 @@ def huber_loss(y_true, y_pred):
 class Brain:
     LEARNING_RATE = 0.00025
 
-    def __init__(self, stateDataCount, actionCount):
+    def __init__(self, stateDataCount, actionCount, model):
         self.stateDataCount = stateDataCount
         self.actionCount = actionCount
 
-        self.model = self._createModel()        # online network
-        self.target_model = self._createModel() # target network
+        self.model = self._createModel(model)        # online network
+        self.target_model = self._createModel(model) # target network
 
-    def _createModel(self):
-        model = Sequential()
-
-        deep_setting = False
-        print("Deep setting", deep_setting)
-        more_deep_setting = False
-        print("More deep setting", more_deep_setting)
-
-        if more_deep_setting:
-            model.add(Dense(units=32, activation='relu', 
-                            input_dim=self.stateDataCount))
-            model.add(Dense(units=16, activation='relu'))
-            model.add(Dense(units=8, activation='relu'))
-
-        else: # Normal layer (breath)
-            model.add(Dense(units=64, activation='relu', 
-                            input_dim=self.stateDataCount))
-            
-            if deep_setting:    # add one more hidden layer
-                model.add(Dense(units=32, activation='relu'))
-            
-        model.add(Dense(units=self.actionCount, activation='linear'))
-        
-        # Learning method
-        optimizer = RMSprop(lr=Brain.LEARNING_RATE)
+    def _createModel(self, model):
 
         # Set loss function
-        model.compile(loss='mse', optimizer=optimizer)
+        # model.compile(loss='mse', optimizer=optimizer)
 
         return model
 

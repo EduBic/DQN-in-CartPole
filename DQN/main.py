@@ -17,6 +17,10 @@ from timeit import default_timer as timer
 start = 0
 end = 0
 
+EPISODES = 3500
+CHECKPOINT_STEP = 500
+SAVE_CHECK = True
+
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
     randAgent = RandomAgent(actionsCount, memory_capacity)
     while randAgent.memory.is_full():
@@ -60,7 +64,7 @@ def main():
     else:
         method = "DQN"
 
-    prefix = method + "-dd-" + str(seed)
+    prefix = method + "-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
@@ -72,6 +76,7 @@ def main():
 
     # initialize the csv 
     folder = 'results/'
+    models_folder = 'models/'
 
     if not os.path.exists(folder): 
         os.makedirs(folder)
@@ -79,6 +84,7 @@ def main():
     nameResult = prefix + '-' + dt.datetime.now().strftime("%m-%dT%H-%M")
     fileNetPath = folder + nameResult + '.h5'
     fileCsvPath = folder + nameResult + '.csv'
+    fileCheckpointPath = models_folder + nameResult
     fileCsvPath_epoch = folder + nameResult + '-epoch.csv'
 
     with open(fileCsvPath, 'w', newline='') as csvfile, open(fileCsvPath_epoch, 'w', newline='') as csvFile_epoch:
@@ -95,7 +101,7 @@ def main():
         try:
             start = timer()
 
-            for episode in range(5000):
+            for episode in range(EPISODES):
 
                 reward_result = env.run(agent)
                 #print("Tot. reward", reward_result)
@@ -109,6 +115,10 @@ def main():
                     fieldnames[2]: np.mean(q_online_results),
                     fieldnames[3]: np.mean(q_target_results)
                 })
+
+                if SAVE_CHECK:
+                    if episode % CHECKPOINT_STEP == 0:
+                        agent.brain.model.save(fileCheckpointPath + '_' + str(episode) + '.h5')
 
         finally:
             agent.brain.model.save(fileNetPath)
