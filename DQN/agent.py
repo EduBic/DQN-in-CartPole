@@ -66,6 +66,8 @@ class Agent:
         self.mean_q_target_epoch = np.array([])
         self.mean_q_online_epoch = np.array([])
 
+        self.loss_hystory_epoch = np.zeros(self.epoch)
+
     def act(self, curr_state):
         if random.random() < self.epsilon:
             return random.randint(0, self.actionCount - 1)
@@ -100,9 +102,6 @@ class Agent:
 
         # Decay the learning
         self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(- self.mLambda * self.steps)
-
-        if self.steps % self.epoch == 0:
-            self.write_epoch()
 
 
     def replay(self):
@@ -142,7 +141,11 @@ class Agent:
             x[i] = state
             y[i] = target
 
-        self.brain.train(x, y)
+        loss_history = self.brain.train(x, y)
+        self.loss_hystory_epoch[(self.steps - 1) % self.epoch] = loss_history[0]
+
+        if self.steps % self.epoch == 0:
+            self.write_epoch()
 
     # Logging methods
 
@@ -167,5 +170,6 @@ class Agent:
             self.writer.fieldnames[0]: self.steps / self.epoch,
             self.writer.fieldnames[1]: np.mean(self.q_online_epoch_results),
             self.writer.fieldnames[2]: np.mean(self.q_target_epoch_results),
-            self.writer.fieldnames[3]: self.epsilon
+            self.writer.fieldnames[3]: self.epsilon,
+            self.writer.fieldnames[4]: np.mean(self.loss_hystory_epoch)
         })

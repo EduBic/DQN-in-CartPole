@@ -92,7 +92,7 @@ def main():
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
-        fieldnames_ep = ['epoch', 'q-online-value', 'q-target-value', 'epsilon']
+        fieldnames_ep = ['epoch', 'q-online-value', 'q-target-value', 'epsilon', 'loss_mean']
         writer_ep = csv.DictWriter(csvFile_epoch, fieldnames=fieldnames_ep)
         writer_ep.writeheader()
 
@@ -121,7 +121,7 @@ def main():
                         agent.brain.model.save(fileCheckpointPath + '_' + str(episode) + '.h5')
 
         finally:
-            agent.brain.model.save(fileNetPath)
+            #agent.brain.model.save(fileNetPath)
             
             end = timer()
             elapsed_seconds = end - start
