@@ -3,46 +3,11 @@ from numpy import genfromtxt
 from os import listdir
 from os.path import isfile, join
 import re
+import numpy as np
 
 
 FOLDER = 'DQN/results/'
-SESSIONS_FOLDER = 'Gamer/sessions/'
-
-def plot_rewards(files):
-    plt.clf()
-
-    for nameFileCsv in files:
-        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
-        rewards = csv_file[:, 1]
-
-        steps = range(0, len(rewards))
-
-        plt.plot(steps, rewards, label=nameFileCsv[:14], linewidth=0.4)
-
-    plt.title('Reward')
-    plt.xlabel('Episode')
-    plt.ylabel('Reward')
-    plt.legend()
-    plt.show()
-
-def plot_sessions(files):
-    plt.clf()
-
-    for nameFileCsv in files:
-        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
-        rewards = csv_file[:, 1]
-
-        steps = range(0, len(rewards))
-
-        episodes = re.findall('_e(.*).csv', nameFileCsv)
-
-        plt.plot(steps, rewards, label=episodes[0], linewidth=0.4)
-
-    plt.title('Reward')
-    plt.xlabel('Episode')
-    plt.ylabel('Reward')
-    plt.legend()
-    plt.show()
+SESSIONS_FOLDER = 'Gamer/sessions/07-02T16-26-44/'
 
 def plot_q_values(files, indeces, xlabel):
     plt.clf()
@@ -62,22 +27,98 @@ def plot_q_values(files, indeces, xlabel):
     plt.legend()
     plt.show()
 
-def plot_loss(files, index):
+
+def plot_rewards(files):
     plt.clf()
-    
+
     for nameFileCsv in files:
         csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
-        loss_mean = csv_file[:, index]
+        rewards = csv_file[:, 1]
 
-        plt_steps = range(0, len(loss_mean))
+        steps = range(0, len(rewards))
 
-        plt.plot(plt_steps, loss_mean, label=nameFileCsv[:14], linewidth=0.4)
+        plt.plot(steps, rewards, label=nameFileCsv[:14], linewidth=0.4)
 
-    plt.title("Loss function per epoch")
-    plt.xlabel('Epoch')
+    plt.title('Reward')
+    plt.xlabel('Episode')
+    plt.ylabel('Reward')
+    plt.legend()
+    plt.show()
+
+
+def plot_sessions(files):
+    plt.clf()
+
+    for nameFileCsv in files:
+        csv_file = genfromtxt(SESSIONS_FOLDER + nameFileCsv, delimiter=',')
+        rewards = csv_file[:, 1]
+
+        steps = range(0, len(rewards))
+
+        episodes = re.findall('_e(.*).csv', nameFileCsv)
+
+        plt.plot(steps, rewards, label=episodes[0], linewidth=0.4)
+
+    plt.title('Reward')
+    plt.xlabel('Episode')
+    plt.ylabel('Reward')
+    plt.legend()
+    plt.show()
+
+
+def plot_mean_sessions(files):
+
+    r_means = []
+    x = []
+    std_array = []
+
+    i = 0
+    for nameFileCsv in files:
+        csv_file = genfromtxt(SESSIONS_FOLDER + nameFileCsv, delimiter=',')
+        rewards = csv_file[:, 1]
+
+        episodes = re.findall('_e(.*).csv', nameFileCsv)
+
+        r_means.append(rewards[1:].mean())
+
+        x.append(int(re.search(r'\d+', episodes[0]).group()))
+
+        std_array.append(rewards[1:].std())
+
+
+    plt.clf()
+
+    # plt.plot(x, r_means, linewidth=0.4)
+    plt.xticks(x)
+
+    plt.errorbar(x, r_means, std_array, linestyle='None', marker='o')
+
+    plt.title('Reward Mean')
+    plt.xlabel('Episodes of training')
+    plt.ylabel('Reward Mean')
+    plt.legend()
+    plt.show()
+
+    #plt.show()
+
+
+def plot_loss(files):
+    plt.clf()
+
+    for nameFileCsv in files:
+        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
+        loss = csv_file[:, 4]
+
+        steps = range(0, len(loss))
+
+        plt.plot(steps, loss, label=nameFileCsv[:14], linewidth=0.4)
+
+    plt.title('Loss')
+    plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()
     plt.show()
+
 
 def main():
 
@@ -94,36 +135,34 @@ def main():
         #"DDQN-dd-52-06-29T10-48",
         #"DDQN-dd-32-06-29T14-11",
 
+
         # Double DQN
-        #"DDQN-seed-52-2018-06-26T13-56-28",
-        "DDQN-42-07-02T13-21",
-        #"DDQN-seed-42-2018-06-26T10-48-11",
-        
+        # "DDQN-seed-52-2018-06-26T13-56-28",
+        # "DDQN-seed-42-2018-06-26T10-48-11",
+
         # Lambda = 0.00001 -> Epsilon need more steps to decay to 0.01
         # "DQN-lambda-42-06-26T21-03",
         # "DDQN-32-lambda-06-27T17-06",
         # "DQN-lambda-52-06-27T09-40"
+
+        'DDQN-42-07-02T15-47-epoch'
     ]
 
     # game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
+    # game_sessions.sort(key=len)
 
-    # for g in game_sessions:
-    #     step = re.findall('_ *(.*).h5', g)
-    #     print(step[0])
+    # plot_mean_sessions(game_sessions)
 
-    # print(game_sessions)
-
-    #plot_rewards(game_sessions)
+    plot_loss(files)
 
     # step , reward, q-online, q-target
-    plot_rewards(files)
-    plot_q_values(files, indeces=[2, 3], xlabel='episode')
+    # plot_rewards(files)
+    # plot_q_values(files, indeces=[2, 3], xlabel='episode')
 
-    files_epochs = [csv_file + '-epoch' for csv_file in files]
+    # files_epochs = [csv_file + '-epoch' for csv_file in files]
 
-    # epoch, q_online, q_target, epsilon, loss
-    plot_q_values(files_epochs, indeces=[1, 2], xlabel='epoch')
-    plot_loss(files_epochs, index=4)
+    # epoch, q_online, q_target
+    # plot_q_values(files_epochs, indeces=[1, 2], xlabel='epoch')
     
 
 if __name__ == "__main__":

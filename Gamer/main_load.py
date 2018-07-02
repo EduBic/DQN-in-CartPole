@@ -24,12 +24,11 @@ freq = 505  # Hz
 start = 0
 end = 0
 
-EPISODES = 500
+EPISODES = 100
 
-models_dir = 'models/'
+models_dir = 'models/B/'
 
 RENDER = False
-
 
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
     randAgent = RandomAgent(actionsCount, memory_capacity)

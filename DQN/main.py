@@ -17,9 +17,10 @@ from timeit import default_timer as timer
 start = 0
 end = 0
 
-EPISODES = 3500
-CHECKPOINT_STEP = 500
+EPISODES = 3600
+CHECKPOINT_STEP = 200
 SAVE_CHECK = True
+
 
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
     randAgent = RandomAgent(actionsCount, memory_capacity)
