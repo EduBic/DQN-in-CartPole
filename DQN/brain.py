@@ -5,7 +5,6 @@ from keras.optimizers import RMSprop
 from keras import backend as K
 
 import tensorflow as tf
-from lossHistory import LossHistory
 
         
 def huber_loss(y_true, y_pred):

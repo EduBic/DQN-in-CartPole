@@ -6,7 +6,7 @@ import re
 
 
 FOLDER = 'DQN/results/'
-SESSIONS_FOLDER = 'Gamer/sessions/07-02T15-07-51/'
+SESSIONS_FOLDER = 'Gamer/sessions/07-02T16-26-44/'
 
 def plot_rewards(files):
     plt.clf()
@@ -90,8 +90,7 @@ def main():
     ]
 
     game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
-
-    print(game_sessions)
+    game_sessions.sort(key=len)
 
     plot_sessions(game_sessions)
 

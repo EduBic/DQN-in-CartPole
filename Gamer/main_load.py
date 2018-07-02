@@ -24,9 +24,9 @@ freq = 505  # Hz
 start = 0
 end = 0
 
-EPISODES = 500
+EPISODES = 100
 
-models_dir = 'models/'
+models_dir = 'models/B/'
 
 RENDER = False
 
