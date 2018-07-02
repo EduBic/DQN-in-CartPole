@@ -5,7 +5,9 @@ from keras.optimizers import RMSprop
 from keras import backend as K
 
 import tensorflow as tf
+from lossHistory import LossHistory
 
+        
 def huber_loss(y_true, y_pred):
     HUBER_LOSS_DELTA = 1.0
     err = y_true - y_pred
@@ -60,7 +62,10 @@ class Brain:
         return model
 
     def train(self, x, y, epoch=1):
-        self.model.fit(x, y, batch_size=64, epochs=epoch, verbose=0)
+        history_callback = self.model.fit(x, y, batch_size=64, epochs=epoch, 
+                                        verbose=0)
+        return history_callback.history["loss"]
+
 
     def predict(self, state):
         return self.model.predict(state)
@@ -76,3 +81,5 @@ class Brain:
 
     def update_target_model(self):
         self.target_model.set_weights(self.model.get_weights())
+        
+    

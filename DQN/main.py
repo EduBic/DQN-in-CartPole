@@ -60,7 +60,7 @@ def main():
     else:
         method = "DQN"
 
-    prefix = method + "-dd-" + str(seed)
+    prefix = method + "-" + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
@@ -86,7 +86,7 @@ def main():
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
-        fieldnames_ep = ['epoch', 'q-online-value', 'q-target-value', 'epsilon']
+        fieldnames_ep = ['epoch', 'q-online-value', 'q-target-value', 'epsilon', 'loss_mean']
         writer_ep = csv.DictWriter(csvFile_epoch, fieldnames=fieldnames_ep)
         writer_ep.writeheader()
 
@@ -111,7 +111,7 @@ def main():
                 })
 
         finally:
-            agent.brain.model.save(fileNetPath)
+            #agent.brain.model.save(fileNetPath)
             
             end = timer()
             elapsed_seconds = end - start
