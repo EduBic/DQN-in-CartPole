@@ -81,5 +81,5 @@ class Brain:
 
     def update_target_model(self):
         self.target_model.set_weights(self.model.get_weights())
-        
+
     
