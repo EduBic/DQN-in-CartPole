@@ -1,8 +1,12 @@
 import matplotlib.pyplot as plt
 from numpy import genfromtxt
+from os import listdir
+from os.path import isfile, join
+import re
 
 
 FOLDER = 'DQN/results/'
+SESSIONS_FOLDER = 'Gamer/sessions/'
 
 def plot_rewards(files):
     plt.clf()
@@ -14,6 +18,25 @@ def plot_rewards(files):
         steps = range(0, len(rewards))
 
         plt.plot(steps, rewards, label=nameFileCsv[:14], linewidth=0.4)
+
+    plt.title('Reward')
+    plt.xlabel('Episode')
+    plt.ylabel('Reward')
+    plt.legend()
+    plt.show()
+
+def plot_sessions(files):
+    plt.clf()
+
+    for nameFileCsv in files:
+        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
+        rewards = csv_file[:, 1]
+
+        steps = range(0, len(rewards))
+
+        episodes = re.findall('_e(.*).csv', nameFileCsv)
+
+        plt.plot(steps, rewards, label=episodes[0], linewidth=0.4)
 
     plt.title('Reward')
     plt.xlabel('Episode')
@@ -79,10 +102,17 @@ def main():
         # "DQN-lambda-42-06-26T21-03",
         # "DDQN-32-lambda-06-27T17-06",
         # "DQN-lambda-52-06-27T09-40"
-
-        # Test
-        "TEST-DDQN-42-07-02T13-10"
     ]
+
+    game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
+
+    for g in game_sessions:
+        step = re.findall('_ *(.*).h5', g)
+        print(step[0])
+
+    print(game_sessions)
+
+    plot_rewards(game_sessions)
 
     # step , reward, q-online, q-target
     plot_rewards(files)
