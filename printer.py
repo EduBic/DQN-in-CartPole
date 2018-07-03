@@ -6,28 +6,52 @@ import re
 import numpy as np
 import os
 
-FOLDER = 'DQN/results/'
-SESSIONS_FOLDER = 'Gamer/sessions/' + '07-02T16-26-44' + '/'
-plot_dir = 'Plot/'
+RESULTS_DIR = 'DQN/results/'
+
+experiment = '07-02T16-26-44'
+SESSIONS_DIR = 'Gamer/sessions/' + experiment + '/'
+
+version = 0
+PLOT_DIR = 'Plot/' + str(version) + "/"
 
 SAVE_PLOT = True
 SHOW = False
 
+'''
+*     0         1                   2               3               4
+* episode,  reward,           q-online-value,   q-target-value
+*
+* epoch,    q-online-value,   q-target-value,   epsilon,        loss_mean
+'''
 
-def save_fig(plot, name):
+indeces_episode = [2, 3]
+indeces_epoch   = [1, 2]
+
+
+def save_fig(plot, type):
 
     if SAVE_PLOT:
-        if not os.path.exists(plot_dir):
-            os.makedirs(plot_dir)
+        if not os.path.exists(PLOT_DIR):
+            os.makedirs(PLOT_DIR)
 
-        plot.savefig(plot_dir + name + ".png")
+        plot.savefig(PLOT_DIR + type + ".png")
 
 
-def plot_q_values(files, indeces, xlabel):
+def plot_q_values(files):
     plt.clf()
 
+    xlabel = ""
+
     for nameFileCsv in files:
-        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
+        csv_file = genfromtxt(RESULTS_DIR + nameFileCsv + '.csv', delimiter=',')
+
+        if "epoch" in nameFileCsv:
+            indeces = indeces_epoch
+            xlabel = "epoch"
+        else:
+            indeces = indeces_episode
+            xlabel  = "episode"
+
         q_value_online = csv_file[:, indeces[0]]
         q_value_target = csv_file[:, indeces[1]]
 
@@ -41,14 +65,14 @@ def plot_q_values(files, indeces, xlabel):
     plt.legend()
     if SHOW: plt.show()
 
-    save_fig(plt)
+    save_fig(plt, "q_values_" + nameFileCsv)
 
 
 def plot_rewards(files):
     plt.clf()
 
     for nameFileCsv in files:
-        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
+        csv_file = genfromtxt(RESULTS_DIR + nameFileCsv + '.csv', delimiter=',')
         rewards = csv_file[:, 1]
 
         steps = range(0, len(rewards))
@@ -61,14 +85,14 @@ def plot_rewards(files):
     plt.legend()
     if SHOW: plt.show()
 
-    save_fig(plt)
+    save_fig(plt, "rewards")
 
 
 def plot_sessions(files):
     plt.clf()
 
     for nameFileCsv in files:
-        csv_file = genfromtxt(SESSIONS_FOLDER + nameFileCsv, delimiter=',')
+        csv_file = genfromtxt(SESSIONS_DIR + nameFileCsv, delimiter=',')
         rewards = csv_file[:, 1]
 
         steps = range(0, len(rewards))
@@ -83,7 +107,7 @@ def plot_sessions(files):
     plt.legend()
     if SHOW: plt.show()
 
-    save_fig(plt)
+    save_fig(plt, "session")
 
 
 def plot_mean_sessions(files):
@@ -93,7 +117,7 @@ def plot_mean_sessions(files):
     std_array = []
 
     for nameFileCsv in files:
-        csv_file = genfromtxt(SESSIONS_FOLDER + nameFileCsv, delimiter=',')
+        csv_file = genfromtxt(SESSIONS_DIR + nameFileCsv, delimiter=',')
         rewards = csv_file[:, 1]
 
         episodes = re.findall('_e(.*).csv', nameFileCsv)
@@ -112,17 +136,17 @@ def plot_mean_sessions(files):
     plt.title('Reward Mean')
     plt.xlabel('Episodes of training')
     plt.ylabel('Reward Mean')
-    plt.legend()
+    # plt.legend()
     if SHOW: plt.show()
 
-    save_fig(plt)
+    save_fig(plt, "mean_session")
 
 
 def plot_loss(files):
     plt.clf()
 
     for nameFileCsv in files:
-        csv_file = genfromtxt(FOLDER + nameFileCsv + '.csv', delimiter=',')
+        csv_file = genfromtxt(RESULTS_DIR + nameFileCsv + '.csv', delimiter=',')
         loss = csv_file[:, 4]
 
         steps = range(0, len(loss))
@@ -135,43 +159,74 @@ def plot_loss(files):
     plt.legend()
     if SHOW: plt.show()
 
-    save_fig(plt)
+    save_fig(plt, "loss")
 
 
 def main():
 
     files = [
-        # DQN
-        #"DQN-seed-52-2018-06-26T15-41-06",
-        #"DQN-seed-42-06-26T16-56",
+        # DQN 1
 
-        # Deep DDQN
-        #"DDQN-deep-52-06-28T09-55",
-        #"DDQN-deep-32-06-28T15-13",
+        'DQN1-lambda-42-06-26T21-03',
+        # 'DQN1-lambda-42-06-26T21-03-epoch',
+        'DQN1-lambda-52-06-27T09-40',
+        # 'DQN1-lambda-52-06-27T09-40-epoch',
+        # 'DQN1-seed-42-06-26T16-56',
+        # 'DQN1-seed-42-06-26T16-56-epoch',
+        # 'DQN1-seed-52-2018-06-26T15-41-06',
+        # 'DQN1-seed-52-2018-06-26T15-41-06-epoch',
 
-        # More Deep DDQN
-        #"DDQN-dd-52-06-29T10-48",
-        #"DDQN-dd-32-06-29T14-11",
+        # DQN 2
 
+        # 'DQN2-32-06-28T17-45-epoch',
+        # 'DQN2-32-06-28T17-45',
+        # 'DQN2-32-lambda-06-27T17-06-epoch',
+        # 'DQN2-32-lambda-06-27T17-06',
+        # 'DQN2-42-07-02T13-41-epoch',
+        # 'DQN2-42-07-02T13-41',
+        # 'DQN2-42-07-02T15-47-epoch',
+        # 'DQN2-42-07-02T15-47',
 
-        # Double DQN
-        # "DDQN-seed-52-2018-06-26T13-56-28",
-        # "DDQN-seed-42-2018-06-26T10-48-11",
-
-        # Lambda = 0.00001 -> Epsilon need more steps to decay to 0.01
-        # "DQN-lambda-42-06-26T21-03",
-        # "DDQN-32-lambda-06-27T17-06",
-        # "DQN-lambda-52-06-27T09-40"
-
-        'DDQN-42-07-02T15-47-epoch'
+        # 'DQN2-dd-32-06-29T14-11-epoch',
+        # 'DQN2-dd-32-06-29T14-11',
+        # 'DQN2-dd-42-06-29T19-52-epoch',
+        # 'DQN2-dd-42-06-29T19-52',
+        # 'DQN2-dd-42-07-02T11-39-epoch',
+        # 'DQN2-dd-42-07-02T11-39',
+        # 'DQN2-dd-42-07-02T12-46-epoch',
+        # 'DQN2-dd-42-07-02T12-46',
+        # 'DQN2-dd-52-06-29T10-48-epoch',
+        # 'DQN2-dd-52-06-29T10-48',
+        #
+        # 'DQN2-deep-32-06-28T15-13-epoch',
+        # 'DQN2-deep-32-06-28T15-13',
+        # 'DQN2-deep-52-06-28T09-55-epoch',
+        # 'DQN2-deep-52-06-28T09-55',
+        #
+        # 'DQN2-lambda-42-06-27T14-01-epoch',
+        # 'DQN2-lambda-42-06-27T14-01',
+        # 'DQN2-lambda-52-06-27T15-39-epoch',
+        # 'DQN2-lambda-52-06-27T15-39',
+        #
+        # 'DQN2-seed-42-2018-06-26T10-48-11-epoch',
+        # 'DQN2-seed-42-2018-06-26T10-48-11',
+        # 'DQN2-seed-52-2018-06-26T13-56-28-epoch',
+        # 'DQN2-seed-52-2018-06-26T13-56-28'
     ]
 
-    game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
-    game_sessions.sort(key=len)
+    OVERLAY = False
 
+    if OVERLAY:
+        plot_q_values(files)
+    else:
+        for f in files:
+            plot_q_values([f])
+
+    # game_sessions = [f for f in listdir(SESSIONS_DIR) if isfile(join(SESSIONS_DIR, f))]
+    # game_sessions.sort(key=len)
     # plot_mean_sessions(game_sessions)
 
-    plot_loss(files)
+    # plot_loss(files)
 
     # step , reward, q-online, q-target
     # plot_rewards(files)
@@ -181,7 +236,7 @@ def main():
 
     # epoch, q_online, q_target
     # plot_q_values(files_epochs, indeces=[1, 2], xlabel='epoch')
-    
+
 
 if __name__ == "__main__":
     main()
