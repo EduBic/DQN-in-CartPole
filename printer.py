@@ -4,10 +4,24 @@ from os import listdir
 from os.path import isfile, join
 import re
 import numpy as np
-
+import os
 
 FOLDER = 'DQN/results/'
-SESSIONS_FOLDER = 'Gamer/sessions/07-02T16-26-44/'
+SESSIONS_FOLDER = 'Gamer/sessions/' + '07-02T16-26-44' + '/'
+plot_dir = 'Plot/'
+
+SAVE_PLOT = True
+SHOW = False
+
+
+def save_fig(plot, name):
+
+    if SAVE_PLOT:
+        if not os.path.exists(plot_dir):
+            os.makedirs(plot_dir)
+
+        plot.savefig(plot_dir + name + ".png")
+
 
 def plot_q_values(files, indeces, xlabel):
     plt.clf()
@@ -25,7 +39,9 @@ def plot_q_values(files, indeces, xlabel):
     plt.xlabel(xlabel)
     plt.ylabel('Q-value')
     plt.legend()
-    plt.show()
+    if SHOW: plt.show()
+
+    save_fig(plt)
 
 
 def plot_rewards(files):
@@ -43,7 +59,9 @@ def plot_rewards(files):
     plt.xlabel('Episode')
     plt.ylabel('Reward')
     plt.legend()
-    plt.show()
+    if SHOW: plt.show()
+
+    save_fig(plt)
 
 
 def plot_sessions(files):
@@ -63,7 +81,9 @@ def plot_sessions(files):
     plt.xlabel('Episode')
     plt.ylabel('Reward')
     plt.legend()
-    plt.show()
+    if SHOW: plt.show()
+
+    save_fig(plt)
 
 
 def plot_mean_sessions(files):
@@ -72,7 +92,6 @@ def plot_mean_sessions(files):
     x = []
     std_array = []
 
-    i = 0
     for nameFileCsv in files:
         csv_file = genfromtxt(SESSIONS_FOLDER + nameFileCsv, delimiter=',')
         rewards = csv_file[:, 1]
@@ -85,21 +104,18 @@ def plot_mean_sessions(files):
 
         std_array.append(rewards[1:].std())
 
-
     plt.clf()
 
-    # plt.plot(x, r_means, linewidth=0.4)
     plt.xticks(x)
-
     plt.errorbar(x, r_means, std_array, linestyle='None', marker='o')
 
     plt.title('Reward Mean')
     plt.xlabel('Episodes of training')
     plt.ylabel('Reward Mean')
     plt.legend()
-    plt.show()
+    if SHOW: plt.show()
 
-    #plt.show()
+    save_fig(plt)
 
 
 def plot_loss(files):
@@ -117,7 +133,9 @@ def plot_loss(files):
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()
-    plt.show()
+    if SHOW: plt.show()
+
+    save_fig(plt)
 
 
 def main():
@@ -148,8 +166,8 @@ def main():
         'DDQN-42-07-02T15-47-epoch'
     ]
 
-    # game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
-    # game_sessions.sort(key=len)
+    game_sessions = [f for f in listdir(SESSIONS_FOLDER) if isfile(join(SESSIONS_FOLDER, f))]
+    game_sessions.sort(key=len)
 
     # plot_mean_sessions(game_sessions)
 
