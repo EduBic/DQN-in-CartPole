@@ -21,7 +21,8 @@ from memory import Memory
 class Agent:
 
     def __init__(self, stateDataCount, actionCount,
-                 double_q_learning,
+                 diff_target_network,
+                 double_DQN,
                  max_eps,
                  min_eps,
                  update_target_frequency,
@@ -30,7 +31,8 @@ class Agent:
                  mem_batch_size,
                  gamma):
 
-        self.double_q_learning = double_q_learning
+        self.diff_target_network = diff_target_network
+        self.double_DQN = double_DQN
 
         self.mLambda = mLambda
         self.memory_capacity = memory_capacity
@@ -80,7 +82,7 @@ class Agent:
 
         curr_state = sample[0]
 
-        if self.double_q_learning:  # For Double DQN
+        if self.diff_target_network:  # For Double DQN
 
             if self.steps % self.update_target_frequency == 0:
                 self.brain.update_target_model()
@@ -91,7 +93,7 @@ class Agent:
             self.q_target_epoch_results[(self.steps - 1) % self.epoch] = max_pred_target
         
         else: # For DQN
-            if self.steps % 1000 == 0:
+            if self.steps % self.update_target_frequency == 0:
                 print("Steps", self.steps)
 
         max_pred_online = np.amax(self.brain.predictOne(curr_state))
@@ -113,12 +115,12 @@ class Agent:
         curr_states = np.array([obs[0] for obs in batch])
         new_states = np.array([(no_state if obs[3] is None else obs[3]) for obs in batch])
 
-        p = self.brain.predict(curr_states)
+        online_pred_curr_state = self.brain.predict(curr_states)
 
-        if self.double_q_learning:
-            p_ = self.brain.predict_target(new_states)
+        if self.diff_target_network:
+            target_pred_new_state = self.brain.predict_target(new_states)
         else:
-            p_ = self.brain.predict(new_states)
+            target_pred_new_state = self.brain.predict(new_states)  # No target network
 
         x = np.zeros((batchLen, self.stateDataCount))
         y = np.zeros((batchLen, self.actionCount))
@@ -132,16 +134,23 @@ class Agent:
             reward = observation[2]
             new_state = observation[3]
 
-            target = p[i]
+            target = online_pred_curr_state[i]
+
             if new_state is None:
                 target[action] = reward
-            else:
-                target[action] = reward + self.gamma * np.amax(p_[i])
+            elif self.double_DQN: # DoubleDQN
+                online_pred_new_state = self.brain.predict(new_states)
+                target_action = np.argmax(online_pred_new_state[i])
+
+                target[action] = reward + self.gamma * target_pred_new_state[i][target_action]
+            else: # DQN
+                target[action] = reward + self.gamma * np.amax(target_pred_new_state[i])
 
             x[i] = state
             y[i] = target
 
         loss_history = self.brain.train(x, y)
+
         self.loss_hystory_epoch[(self.steps - 1) % self.epoch] = loss_history[0]
 
         if self.steps % self.epoch == 0:
