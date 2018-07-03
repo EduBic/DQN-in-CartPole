@@ -24,6 +24,8 @@ SHOW = False
 * epoch,    q-online-value,   q-target-value,   epsilon,        loss_mean
 '''
 
+xlabel = ""
+indeces = []
 indeces_episode = [2, 3]
 indeces_epoch   = [1, 2]
 
@@ -39,8 +41,6 @@ def save_fig(plot, type):
 
 def plot_q_values(files):
     plt.clf()
-
-    xlabel = ""
 
     for nameFileCsv in files:
         csv_file = genfromtxt(RESULTS_DIR + nameFileCsv + '.csv', delimiter=',')
@@ -62,7 +62,7 @@ def plot_q_values(files):
     plt.title("Q-values")
     plt.xlabel(xlabel)
     plt.ylabel('Q-value')
-    plt.legend()
+    plt.legend(loc=1, ncol=2, borderaxespad=0.8)
     if SHOW: plt.show()
 
     save_fig(plt, "q_values_" + nameFileCsv)
@@ -82,7 +82,7 @@ def plot_rewards(files):
     plt.title('Reward')
     plt.xlabel('Episode')
     plt.ylabel('Reward')
-    plt.legend()
+    plt.legend(loc=1, ncol=2, borderaxespad=0.8)
     if SHOW: plt.show()
 
     save_fig(plt, "rewards")
@@ -111,6 +111,7 @@ def plot_sessions(files):
 
 
 def plot_mean_sessions(files):
+    plt.clf()
 
     r_means = []
     x = []
@@ -127,8 +128,6 @@ def plot_mean_sessions(files):
         x.append(int(re.search(r'\d+', episodes[0]).group()))
 
         std_array.append(rewards[1:].std())
-
-    plt.clf()
 
     plt.xticks(x)
     plt.errorbar(x, r_means, std_array, linestyle='None', marker='o')
@@ -225,17 +224,6 @@ def main():
     # game_sessions = [f for f in listdir(SESSIONS_DIR) if isfile(join(SESSIONS_DIR, f))]
     # game_sessions.sort(key=len)
     # plot_mean_sessions(game_sessions)
-
-    # plot_loss(files)
-
-    # step , reward, q-online, q-target
-    # plot_rewards(files)
-    # plot_q_values(files, indeces=[2, 3], xlabel='episode')
-
-    # files_epochs = [csv_file + '-epoch' for csv_file in files]
-
-    # epoch, q_online, q_target
-    # plot_q_values(files_epochs, indeces=[1, 2], xlabel='epoch')
 
 
 if __name__ == "__main__":
