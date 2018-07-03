@@ -38,7 +38,6 @@ def save_fig(plot, type):
 
         plot.savefig(PLOT_DIR + type + ".png")
 
-
 def plot_q_values(files):
     plt.clf()
 
@@ -66,6 +65,7 @@ def plot_q_values(files):
     if SHOW: plt.show()
 
     save_fig(plt, "q_values_" + nameFileCsv)
+    print(nameFileCsv + "saved")
 
 
 def plot_rewards(files):
@@ -170,37 +170,37 @@ def main():
         # 'DQN1-lambda-42-06-26T21-03-epoch',
         'DQN1-lambda-52-06-27T09-40',
         # 'DQN1-lambda-52-06-27T09-40-epoch',
-        # 'DQN1-seed-42-06-26T16-56',
+        'DQN1-seed-42-06-26T16-56',
         # 'DQN1-seed-42-06-26T16-56-epoch',
-        # 'DQN1-seed-52-2018-06-26T15-41-06',
+        'DQN1-seed-52-2018-06-26T15-41-06',
         # 'DQN1-seed-52-2018-06-26T15-41-06-epoch',
 
         # DQN 2
 
         # 'DQN2-32-06-28T17-45-epoch',
-        # 'DQN2-32-06-28T17-45',
+        'DQN2-32-06-28T17-45',
         # 'DQN2-32-lambda-06-27T17-06-epoch',
-        # 'DQN2-32-lambda-06-27T17-06',
+        'DQN2-32-lambda-06-27T17-06',
         # 'DQN2-42-07-02T13-41-epoch',
-        # 'DQN2-42-07-02T13-41',
+        'DQN2-42-07-02T13-41',
         # 'DQN2-42-07-02T15-47-epoch',
-        # 'DQN2-42-07-02T15-47',
+        'DQN2-42-07-02T15-47',
 
         # 'DQN2-dd-32-06-29T14-11-epoch',
-        # 'DQN2-dd-32-06-29T14-11',
+        'DQN2-dd-32-06-29T14-11',
         # 'DQN2-dd-42-06-29T19-52-epoch',
-        # 'DQN2-dd-42-06-29T19-52',
+        'DQN2-dd-42-06-29T19-52',
         # 'DQN2-dd-42-07-02T11-39-epoch',
-        # 'DQN2-dd-42-07-02T11-39',
+        'DQN2-dd-42-07-02T11-39',
         # 'DQN2-dd-42-07-02T12-46-epoch',
-        # 'DQN2-dd-42-07-02T12-46',
+        'DQN2-dd-42-07-02T12-46',
         # 'DQN2-dd-52-06-29T10-48-epoch',
-        # 'DQN2-dd-52-06-29T10-48',
+        'DQN2-dd-52-06-29T10-48',
         #
         # 'DQN2-deep-32-06-28T15-13-epoch',
-        # 'DQN2-deep-32-06-28T15-13',
+        'DQN2-deep-32-06-28T15-13',
         # 'DQN2-deep-52-06-28T09-55-epoch',
-        # 'DQN2-deep-52-06-28T09-55',
+        'DQN2-deep-52-06-28T09-55',
         #
         # 'DQN2-lambda-42-06-27T14-01-epoch',
         # 'DQN2-lambda-42-06-27T14-01',
