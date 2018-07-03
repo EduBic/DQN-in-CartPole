@@ -19,7 +19,7 @@ end = 0
 
 EPISODES = 3600
 CHECKPOINT_STEP = 200
-SAVE_CHECK = True
+SAVE_CHECK = False
 
 
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
@@ -41,7 +41,8 @@ def init_CartPole(double_enable):
     print("Action Count:", actionsCount)
 
     agent = Agent(stateDataCount, actionsCount, 
-                double_q_learning=double_enable, 
+                diff_target_network=True, 
+                double_DQN=double_enable,
                 max_eps=1,
                 min_eps=0.01, 
                 update_target_frequency=800,
@@ -61,7 +62,7 @@ def main():
 
     method = "No-method"
     if double_enable: 
-        method = "DDQN"
+        method = "trueDDQN"
     else:
         method = "DQN"
 
@@ -117,9 +118,8 @@ def main():
                     fieldnames[3]: np.mean(q_target_results)
                 })
 
-                if SAVE_CHECK:
-                    if episode % CHECKPOINT_STEP == 0:
-                        agent.brain.model.save(fileCheckpointPath + '_' + str(episode) + '.h5')
+                if SAVE_CHECK and episode % CHECKPOINT_STEP == 0:
+                    agent.brain.model.save(fileCheckpointPath + '_' + str(episode) + '.h5')
 
         finally:
             #agent.brain.model.save(fileNetPath)
