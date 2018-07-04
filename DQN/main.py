@@ -19,14 +19,20 @@ duration = 720  # millisecond
 freq = 505  # Hz
 BEEP = True
 
-start = 0
-end = 0
 
-EPISODES = 3600
+EPISODES = 100
 CHECKPOINT_STEP = 200
 SAVE_CHECK = True
 
 EXPERIMENT = 5
+
+# DQN settings
+SEED = 42
+DOUBLE_SET = True
+
+# Architecture DQN settings
+MODE_DEEP_SET = False
+DEEP_SET = False
 
 
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
@@ -37,7 +43,7 @@ def get_rand_agent_memory(env, actionsCount, memory_capacity):
     return randAgent.memory
 
 
-def init_CartPole(double_enable):
+def init_CartPole():
     CartPoleProb = "CartPole-v0"
     env = Environment(CartPoleProb, normalize=False, render=False)
 
@@ -49,38 +55,42 @@ def init_CartPole(double_enable):
 
     agent = Agent(stateDataCount, actionsCount, 
                 diff_target_network=True, 
-                double_DQN=double_enable,
+                double_DQN=DOUBLE_SET,
                 max_eps=1,
                 min_eps=0.01, 
                 update_target_frequency=800,
                 memory_capacity=10000,
                 mem_batch_size=64,
                 mLambda=0.001,
-                gamma=0.99)
+                gamma=0.99,
+                more_deep_set=MODE_DEEP_SET,
+                deep_set=DEEP_SET)
     agent.memory = get_rand_agent_memory(env, actionsCount, agent.memory_capacity)
 
     return agent, env
 
 def main():
 
-    # Settings
-    seed = 32
-    double_enable = True
-
-    method = "No-method"
-    if double_enable: 
+    if DOUBLE_SET: 
         method = "DoubleDQN"    # True DDQN
     else:
         method = "DQN"
 
-    prefix = method + "-" + str(seed)
+    if MODE_DEEP_SET:
+        architecture = "-more_deep-"
+    elif DEEP_SET:
+        architecture = "-deep-"
+    else:
+        architecture = ""
 
-    random.seed(seed)
-    np.random.seed(seed)
-    agent, env = init_CartPole(double_enable)
-    env.set_seed(seed)
+    prefix = method + architecture + str(SEED)
 
-    print("Seed set:", seed)
+    random.seed(SEED)
+    np.random.seed(SEED)
+    agent, env = init_CartPole()
+    env.set_seed(SEED)
+
+    print("Seed set:", SEED)
     print("\nStart")
 
     # initialize the csv 

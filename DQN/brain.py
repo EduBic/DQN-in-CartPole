@@ -22,7 +22,13 @@ def huber_loss(y_true, y_pred):
 class Brain:
     LEARNING_RATE = 0.00025
 
-    def __init__(self, stateDataCount, actionCount):
+    def __init__(self, stateDataCount, actionCount, 
+                more_deep_set=False, 
+                deep_set=False):
+
+        self.more_deep_set = more_deep_set
+        self.deep_set = deep_set
+
         self.stateDataCount = stateDataCount
         self.actionCount = actionCount
 
@@ -32,23 +38,23 @@ class Brain:
     def _createModel(self):
         model = Sequential()
 
-        more_deep_setting = True
-        print("More deep setting", more_deep_setting)
-        deep_setting = False
-        print("Deep setting", deep_setting)
+        print("CAREFUL! More deep setting", self.more_deep_set)
+        print("CAREFUL! Deep setting", self.deep_set)
 
-        if more_deep_setting:
+        if self.more_deep_set:   # deep deep
             model.add(Dense(units=32, activation='relu', 
                             input_dim=self.stateDataCount))
             model.add(Dense(units=16, activation='relu'))
             model.add(Dense(units=8, activation='relu'))
 
-        else: # Normal layer (breath)
+        elif self.deep_set: # deep
             model.add(Dense(units=64, activation='relu', 
                             input_dim=self.stateDataCount))
-            
-            if deep_setting:    # add one more hidden layer
-                model.add(Dense(units=32, activation='relu'))
+            model.add(Dense(units=32, activation='relu'))
+
+        else: # Normal layer (shallow)
+            model.add(Dense(units=64, activation='relu', 
+                            input_dim=self.stateDataCount))
             
         model.add(Dense(units=self.actionCount, activation='linear'))
         

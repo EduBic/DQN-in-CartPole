@@ -29,7 +29,9 @@ class Agent:
                  mLambda,
                  memory_capacity,
                  mem_batch_size,
-                 gamma):
+                 gamma,
+                 more_deep_set,
+                 deep_set):
 
         self.diff_target_network = diff_target_network
         self.double_DQN = double_DQN
@@ -50,7 +52,8 @@ class Agent:
 
         self.epsilon = max_eps
 
-        self.brain = Brain(stateDataCount, actionCount)
+        self.brain = Brain(stateDataCount, actionCount,
+                    more_deep_set=more_deep_set, deep_set=deep_set)
         self.memory = Memory(self.memory_capacity)
 
         # state to test q value
