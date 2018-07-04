@@ -6,13 +6,16 @@ import re
 import numpy as np
 import os
 
+# General settings
 RESULTS_DIR = 'DQN/results/'
+PLOT_DIR = 'Plot'
 
+# DEBUG
 experiment = '07-02T16-26-44'
 SESSIONS_DIR = 'Gamer/sessions/' + experiment + '/'
 
 version = 0
-PLOT_DIR = 'Plot/' + str(version) + "/"
+
 
 SAVE_PLOT = True
 SHOW = False
@@ -30,24 +33,28 @@ indeces_episode = [2, 3]
 indeces_epoch   = [1, 2]
 
 
-def save_fig(plot, type):
+def save_fig(plot, folderFile, namePlot):
 
     if SAVE_PLOT:
-        if not os.path.exists(PLOT_DIR):
-            os.makedirs(PLOT_DIR)
+        if not os.path.exists(PLOT_DIR + "/" + folderFile + "/"):
+            os.makedirs(PLOT_DIR + "/" + folderFile + "/")
 
-        plot.savefig(PLOT_DIR + type + ".png")
+        plot.savefig(PLOT_DIR + "/" + folderFile + "/" + namePlot + ".png")
 
 def plot_q_values(files):
     plt.clf()
+
+    namePlot = "q_values"
 
     for nameFileCsv in files:
         csv_file = genfromtxt(RESULTS_DIR + nameFileCsv + '.csv', delimiter=',')
 
         if "epoch" in nameFileCsv:
+            namePlot += "_per_epoch"
             indeces = indeces_epoch
             xlabel = "epoch"
         else:
+            namePlot += "_per_episode"
             indeces = indeces_episode
             xlabel  = "episode"
 
@@ -64,8 +71,8 @@ def plot_q_values(files):
     plt.legend(loc=1, ncol=2, borderaxespad=0.8)
     if SHOW: plt.show()
 
-    save_fig(plt, "q_values_" + nameFileCsv)
-    print(nameFileCsv + "saved")
+    save_fig(plt, files[0], namePlot)
+    print(nameFileCsv + " saved")
 
 
 def plot_rewards(files):
@@ -85,7 +92,7 @@ def plot_rewards(files):
     plt.legend(loc=1, ncol=2, borderaxespad=0.8)
     if SHOW: plt.show()
 
-    save_fig(plt, "rewards")
+    save_fig(plt, files[0], "rewards")
 
 
 def plot_sessions(files):
@@ -107,7 +114,7 @@ def plot_sessions(files):
     plt.legend()
     if SHOW: plt.show()
 
-    save_fig(plt, "session")
+    save_fig(plt, files[0], "session")
 
 
 def plot_mean_sessions(files):
@@ -138,7 +145,7 @@ def plot_mean_sessions(files):
     # plt.legend()
     if SHOW: plt.show()
 
-    save_fig(plt, "mean_session")
+    save_fig(plt, files[0], "mean_session")
 
 
 def plot_loss(files):
@@ -158,7 +165,7 @@ def plot_loss(files):
     plt.legend()
     if SHOW: plt.show()
 
-    save_fig(plt, "loss")
+    save_fig(plt, files[0], "loss")
 
 
 def main():
@@ -166,41 +173,41 @@ def main():
     files = [
         # DQN 1
 
-        'DQN1-lambda-42-06-26T21-03',
-        # 'DQN1-lambda-42-06-26T21-03-epoch',
-        'DQN1-lambda-52-06-27T09-40',
-        # 'DQN1-lambda-52-06-27T09-40-epoch',
-        'DQN1-seed-42-06-26T16-56',
-        # 'DQN1-seed-42-06-26T16-56-epoch',
-        'DQN1-seed-52-2018-06-26T15-41-06',
-        # 'DQN1-seed-52-2018-06-26T15-41-06-epoch',
+        # 'DQN1-lambda-42-06-26T21-03',
+        # # 'DQN1-lambda-42-06-26T21-03-epoch',
+        # 'DQN1-lambda-52-06-27T09-40',
+        # # 'DQN1-lambda-52-06-27T09-40-epoch',
+        # 'DQN1-seed-42-06-26T16-56',
+        # # 'DQN1-seed-42-06-26T16-56-epoch',
+        # 'DQN1-seed-52-2018-06-26T15-41-06',
+        # # 'DQN1-seed-52-2018-06-26T15-41-06-epoch',
 
-        # DQN 2
+        # # DQN 2
 
-        # 'DQN2-32-06-28T17-45-epoch',
-        'DQN2-32-06-28T17-45',
-        # 'DQN2-32-lambda-06-27T17-06-epoch',
-        'DQN2-32-lambda-06-27T17-06',
-        # 'DQN2-42-07-02T13-41-epoch',
-        'DQN2-42-07-02T13-41',
-        # 'DQN2-42-07-02T15-47-epoch',
-        'DQN2-42-07-02T15-47',
+        # # 'DQN2-32-06-28T17-45-epoch',
+        # 'DQN2-32-06-28T17-45',
+        # # 'DQN2-32-lambda-06-27T17-06-epoch',
+        # 'DQN2-32-lambda-06-27T17-06',
+        # # 'DQN2-42-07-02T13-41-epoch',
+        # 'DQN2-42-07-02T13-41',
+        # # 'DQN2-42-07-02T15-47-epoch',
+        # 'DQN2-42-07-02T15-47',
 
-        # 'DQN2-dd-32-06-29T14-11-epoch',
-        'DQN2-dd-32-06-29T14-11',
-        # 'DQN2-dd-42-06-29T19-52-epoch',
-        'DQN2-dd-42-06-29T19-52',
-        # 'DQN2-dd-42-07-02T11-39-epoch',
-        'DQN2-dd-42-07-02T11-39',
-        # 'DQN2-dd-42-07-02T12-46-epoch',
-        'DQN2-dd-42-07-02T12-46',
-        # 'DQN2-dd-52-06-29T10-48-epoch',
-        'DQN2-dd-52-06-29T10-48',
-        #
-        # 'DQN2-deep-32-06-28T15-13-epoch',
-        'DQN2-deep-32-06-28T15-13',
-        # 'DQN2-deep-52-06-28T09-55-epoch',
-        'DQN2-deep-52-06-28T09-55',
+        # # 'DQN2-dd-32-06-29T14-11-epoch',
+        # 'DQN2-dd-32-06-29T14-11',
+        # # 'DQN2-dd-42-06-29T19-52-epoch',
+        # 'DQN2-dd-42-06-29T19-52',
+        # # 'DQN2-dd-42-07-02T11-39-epoch',
+        # 'DQN2-dd-42-07-02T11-39',
+        # # 'DQN2-dd-42-07-02T12-46-epoch',
+        # 'DQN2-dd-42-07-02T12-46',
+        # # 'DQN2-dd-52-06-29T10-48-epoch',
+        # 'DQN2-dd-52-06-29T10-48',
+        # #
+        # # 'DQN2-deep-32-06-28T15-13-epoch',
+        # 'DQN2-deep-32-06-28T15-13',
+        # # 'DQN2-deep-52-06-28T09-55-epoch',
+        # 'DQN2-deep-52-06-28T09-55',
         #
         # 'DQN2-lambda-42-06-27T14-01-epoch',
         # 'DQN2-lambda-42-06-27T14-01',
@@ -220,6 +227,9 @@ def main():
     else:
         for f in files:
             plot_q_values([f])
+            plot_q_values([f + "-epoch"])
+            plot_loss([f + "-epoch"])
+            plot_rewards([f])
 
     # game_sessions = [f for f in listdir(SESSIONS_DIR) if isfile(join(SESSIONS_DIR, f))]
     # game_sessions.sort(key=len)
