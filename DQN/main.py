@@ -20,14 +20,14 @@ freq = 505  # Hz
 BEEP = True
 
 
-EPISODES = 100
+EPISODES = 3600
 CHECKPOINT_STEP = 200
 SAVE_CHECK = True
 
 EXPERIMENT = 5
 
 # DQN settings
-SEED = 42
+SEED = 32
 DOUBLE_SET = True
 
 # Architecture DQN settings
@@ -81,7 +81,7 @@ def main():
     elif DEEP_SET:
         architecture = "-deep-"
     else:
-        architecture = ""
+        architecture = "-"
 
     prefix = method + architecture + str(SEED)
 
