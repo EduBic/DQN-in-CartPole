@@ -64,12 +64,12 @@ def init_CartPole(double_enable):
 def main():
 
     # Settings
-    seed = 42
+    seed = 32
     double_enable = True
 
     method = "No-method"
     if double_enable: 
-        method = "trueDDQN"
+        method = "DoubleDQN"    # True DDQN
     else:
         method = "DQN"
 
