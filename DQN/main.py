@@ -13,13 +13,20 @@ from agent import Agent
 from randomAgent import RandomAgent
 
 from timeit import default_timer as timer
+import winsound
+
+duration = 720  # millisecond
+freq = 505  # Hz
+BEEP = True
 
 start = 0
 end = 0
 
 EPISODES = 3600
 CHECKPOINT_STEP = 200
-SAVE_CHECK = False
+SAVE_CHECK = True
+
+EXPERIMENT = 5
 
 
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
@@ -77,17 +84,20 @@ def main():
     print("\nStart")
 
     # initialize the csv 
-    folder = 'results/'
-    models_folder = 'models/'
-
-    if not os.path.exists(folder): 
-        os.makedirs(folder)
+    folder = 'results/' + "res_experiment_" + str(EXPERIMENT) + "/"
+    models_folder = 'models/' + "mod_experiment_" + str(EXPERIMENT) + "/"
 
     nameResult = prefix + '-' + dt.datetime.now().strftime("%m-%dT%H-%M")
     fileNetPath = folder + nameResult + '.h5'
     fileCsvPath = folder + nameResult + '.csv'
     fileCheckpointPath = models_folder + nameResult
     fileCsvPath_epoch = folder + nameResult + '-epoch.csv'
+
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    if not os.path.exists(models_folder):
+        os.makedirs(models_folder)
 
     with open(fileCsvPath, 'w', newline='') as csvfile, open(fileCsvPath_epoch, 'w', newline='') as csvFile_epoch:
         fieldnames = ['episode', 'reward', 'q-online-value', 'q-target-value']
@@ -103,7 +113,7 @@ def main():
         try:
             start = timer()
 
-            for episode in range(EPISODES):
+            for episode in range(EPISODES+1):
 
                 reward_result = env.run(agent)
                 #print("Tot. reward", reward_result)
@@ -132,6 +142,8 @@ def main():
             agent.set_writer_epochs(None)
     
     print("End\n")
+    if BEEP:
+        winsound.Beep(freq, duration)
 
 if __name__ == "__main__":
     main()

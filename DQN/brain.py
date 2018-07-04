@@ -32,10 +32,10 @@ class Brain:
     def _createModel(self):
         model = Sequential()
 
+        more_deep_setting = True
+        print("More deep setting", more_deep_setting)
         deep_setting = False
         print("Deep setting", deep_setting)
-        more_deep_setting = False
-        print("More deep setting", more_deep_setting)
 
         if more_deep_setting:
             model.add(Dense(units=32, activation='relu', 
