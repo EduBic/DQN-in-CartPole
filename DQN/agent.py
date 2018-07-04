@@ -122,6 +122,9 @@ class Agent:
         else:
             target_pred_new_state = self.brain.predict(new_states)  # No target network
 
+        if self.double_DQN:
+            online_pred_new_state = self.brain.predict(new_states)  # Double Target network
+
         x = np.zeros((batchLen, self.stateDataCount))
         y = np.zeros((batchLen, self.actionCount))
 
@@ -139,9 +142,7 @@ class Agent:
             if new_state is None:
                 target[action] = reward
             elif self.double_DQN: # DoubleDQN
-                online_pred_new_state = self.brain.predict(new_states)
                 target_action = np.argmax(online_pred_new_state[i])
-
                 target[action] = reward + self.gamma * target_pred_new_state[i][target_action]
             else: # DQN
                 target[action] = reward + self.gamma * np.amax(target_pred_new_state[i])
