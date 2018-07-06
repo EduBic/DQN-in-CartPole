@@ -30,7 +30,6 @@ class Agent:
                  memory_capacity,
                  mem_batch_size,
                  gamma,
-                 more_deep_set,
                  deep_set):
 
         self.diff_target_network = diff_target_network
@@ -52,8 +51,7 @@ class Agent:
 
         self.epsilon = max_eps
 
-        self.brain = Brain(stateDataCount, actionCount,
-                    more_deep_set=more_deep_set, deep_set=deep_set)
+        self.brain = Brain(stateDataCount, actionCount, deep_set=deep_set)
         self.memory = Memory(self.memory_capacity)
 
         # state to test q value
@@ -105,8 +103,14 @@ class Agent:
 
         self.index_results += 1
 
+        DECAY_EXP = False
+        print("BE CAREFUL!! Decay exponential:", DECAY_EXP)
+        
         # Decay the learning
-        self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(- self.mLambda * self.steps)
+        if DECAY_EXP:
+            self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(- self.mLambda * self.steps)
+        else:
+            self.epsilon = - 0.000099 * self.steps + 1
 
 
     def replay(self):
@@ -153,7 +157,7 @@ class Agent:
             x[i] = state
             y[i] = target
 
-        loss_history = self.brain.train(x, y)
+        loss_history = self.brain.train(x, y, self.mem_batch_size)
 
         self.loss_hystory_epoch[(self.steps - 1) % self.epoch] = loss_history[0]
 

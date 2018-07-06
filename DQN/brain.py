@@ -22,11 +22,8 @@ def huber_loss(y_true, y_pred):
 class Brain:
     LEARNING_RATE = 0.00025
 
-    def __init__(self, stateDataCount, actionCount, 
-                more_deep_set=False, 
-                deep_set=False):
+    def __init__(self, stateDataCount, actionCount, deep_set=False):
 
-        self.more_deep_set = more_deep_set
         self.deep_set = deep_set
 
         self.stateDataCount = stateDataCount
@@ -38,16 +35,9 @@ class Brain:
     def _createModel(self):
         model = Sequential()
 
-        print("CAREFUL! More deep setting", self.more_deep_set)
         print("CAREFUL! Deep setting", self.deep_set)
 
-        if self.more_deep_set:   # deep deep
-            model.add(Dense(units=32, activation='relu', 
-                            input_dim=self.stateDataCount))
-            model.add(Dense(units=16, activation='relu'))
-            model.add(Dense(units=8, activation='relu'))
-
-        elif self.deep_set: # deep
+        if self.deep_set: # deep
             model.add(Dense(units=64, activation='relu', 
                             input_dim=self.stateDataCount))
             model.add(Dense(units=32, activation='relu'))
@@ -66,8 +56,8 @@ class Brain:
 
         return model
 
-    def train(self, x, y, epoch=1):
-        history_callback = self.model.fit(x, y, batch_size=64, epochs=epoch, 
+    def train(self, x, y, minibatch_size, epoch=1):
+        history_callback = self.model.fit(x, y, batch_size=minibatch_size, epochs=epoch, 
                                         verbose=0)
         return history_callback.history["loss"]
 

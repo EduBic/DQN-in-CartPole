@@ -22,16 +22,17 @@ BEEP = True
 
 EPISODES = 3600
 CHECKPOINT_STEP = 200
-SAVE_CHECK = True
+SAVE_CHECK = False
 
-EXPERIMENT = 5
+EXPERIMENT = 0
+EXPERIMENT_FOLDER = "" #"res_experiment_" + str(EXPERIMENT) + "/"
 
 # DQN settings
 SEED = 32
+TAU = 1000
 DOUBLE_SET = True
 
 # Architecture DQN settings
-MODE_DEEP_SET = False
 DEEP_SET = False
 
 
@@ -58,12 +59,11 @@ def init_CartPole():
                 double_DQN=DOUBLE_SET,
                 max_eps=1,
                 min_eps=0.01, 
-                update_target_frequency=800,
+                update_target_frequency=TAU,
                 memory_capacity=10000,
-                mem_batch_size=64,
+                mem_batch_size=32,
                 mLambda=0.001,
                 gamma=0.99,
-                more_deep_set=MODE_DEEP_SET,
                 deep_set=DEEP_SET)
     agent.memory = get_rand_agent_memory(env, actionsCount, agent.memory_capacity)
 
@@ -76,14 +76,12 @@ def main():
     else:
         method = "DQN"
 
-    if MODE_DEEP_SET:
-        architecture = "-more_deep-"
-    elif DEEP_SET:
+    if DEEP_SET:
         architecture = "-deep-"
     else:
         architecture = "-"
 
-    prefix = method + architecture + str(SEED)
+    prefix = method + architecture + str(SEED) + "-tau" + TAU
 
     random.seed(SEED)
     np.random.seed(SEED)
@@ -94,8 +92,8 @@ def main():
     print("\nStart")
 
     # initialize the csv 
-    folder = 'results/' + "res_experiment_" + str(EXPERIMENT) + "/"
-    models_folder = 'models/' + "mod_experiment_" + str(EXPERIMENT) + "/"
+    folder = 'results/' + EXPERIMENT_FOLDER
+    models_folder = 'models/' + EXPERIMENT_FOLDER
 
     nameResult = prefix + '-' + dt.datetime.now().strftime("%m-%dT%H-%M")
     fileNetPath = folder + nameResult + '.h5'
