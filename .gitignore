@@ -6,3 +6,4 @@ log/
 *.h5
 *.npy
 Plot/
+*.csv
