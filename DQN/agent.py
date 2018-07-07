@@ -110,7 +110,7 @@ class Agent:
         if DECAY_EXP:
             self.epsilon = self.min_eps + (self.max_eps - self.min_eps) * math.exp(- self.mLambda * self.steps)
         else:
-            self.epsilon = - 0.000099 * self.steps + 1
+            self.epsilon = max(- 0.000099 * self.steps + self.max_eps, self.min_eps)
 
 
     def replay(self):

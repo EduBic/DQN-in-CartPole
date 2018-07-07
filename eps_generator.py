@@ -3,10 +3,10 @@ import csv
 import math
 import numpy as np
 
-NUM_STEP = 1000000 # steps of the agent
+NUM_STEP = 20000 # steps of the agent
 MAX_EPS = 1
 MIN_EPS = 0.01
-MY_LAMBDA = 0.00001
+MY_LAMBDA = 0.001
 
 def make_csv():
 
@@ -32,11 +32,14 @@ def plot_eps():
 
     steps = range(1, NUM_STEP + 1)
     results = np.zeros(NUM_STEP)
+    results_2 = np.zeros(NUM_STEP)
 
     for step in range(NUM_STEP):
-        results[step] = const_ * math.exp(- MY_LAMBDA * step) # epsilon
+        results[step] = max(- 0.000099 * step + MAX_EPS, MIN_EPS) # epsilon linear
+        results_2[step] = const_ * math.exp(- MY_LAMBDA * step) # epsilon exponential
 
     plt.plot(steps, results, 'b')
+    plt.plot(steps, results_2, 'r')
 
     plt.title("Epsilon")
     plt.xlabel('steps')
