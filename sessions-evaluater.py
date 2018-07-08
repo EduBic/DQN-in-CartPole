@@ -13,8 +13,8 @@ sessions = [
     "mod_29b_DDQN_deep"
 ]
 
-with open("sess-results", 'w', newline='') as csvfile:
-    fieldnames = ['session', 'file', 'avg_reward', 'num_solver', 'first_solver']
+with open("sess-results.csv", 'w', newline='') as csvfile:
+    fieldnames = ['session', 'avg_reward', 'num_solver', 'first_solver']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
 
@@ -62,10 +62,9 @@ with open("sess-results", 'w', newline='') as csvfile:
 
         writer.writerow({
             fieldnames[0]: sess_type,
-            fieldnames[1]: str(f),
-            fieldnames[2]: avg_reward,
-            fieldnames[3]: num_solved,
-            fieldnames[4]: str(first_win)
+            fieldnames[1]: avg_reward,
+            fieldnames[2]: num_solved,
+            fieldnames[3]: str(first_win)
         })
             
         print("Conclusion")
