@@ -4,36 +4,33 @@ import numpy as np
 import csv
 
 
-parent_fold = "sessions/"
-
-sessions = [
-    "mod_20b_DQN",
-    "mod_23b_DQN_deep",
-    "mod_26b_DDQN",
-    "mod_29b_DDQN_deep"
-]
+PARENT_FOLDER = "sessions/"
 
 with open("sess-results.csv", 'w', newline='') as csvfile:
-    fieldnames = ['session', 'avg_reward', 'num_solver', 'first_solver']
+    fieldnames = ['model', 'seed', 'avg_reward', 'std_reward', 'num_solver', 'first_solver']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
 
-    # Load all file for each folders
-    for sess_type in sessions:
+    sessions_folders = os.listdir(PARENT_FOLDER)
 
-        folder = parent_fold + sess_type + "/"
+    # Load all file for each folders
+    for session in sessions_folders:
+
+        folder = PARENT_FOLDER + session + "/"
         files = os.listdir(folder)
 
         files.pop(0) # remove model with 0 steps of training
 
-        # General data on sess_type
+        # General data on session
         num_model = 0
         avg_reward = 0
         num_solved = 0
         first_win = None
 
+        all_rewards = np.array([])
 
-        print("\nSession:", sess_type)
+
+        print("\nSession:", session)
 
         for f in files:
             file_csv = np.genfromtxt(folder + f, delimiter=',')
@@ -43,6 +40,7 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
             rewards = file_csv[1:, 1]
             
             file_avg_rew = np.mean(rewards)
+            all_rewards = np.append(all_rewards, rewards)
 
             avg_reward += 1 / (num_model + 1) * (file_avg_rew - avg_reward)
 
@@ -60,11 +58,19 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
 
             num_model += 1
 
+        # Extract info from name of model
+        session = session[8:].replace("_", '')
+
+        model_type = ''.join([c for c in session if not c.isdigit()]).replace("d", " deep")
+        seed = session.replace("DDQN", '').replace("DQN", '').replace("d", '')
+
         writer.writerow({
-            fieldnames[0]: sess_type,
-            fieldnames[1]: avg_reward,
-            fieldnames[2]: num_solved,
-            fieldnames[3]: str(first_win)
+            fieldnames[0]: model_type,
+            fieldnames[1]: seed,
+            fieldnames[2]: avg_reward,
+            fieldnames[3]: np.std(all_rewards),
+            fieldnames[4]: num_solved,
+            fieldnames[5]: first_win.replace('_e','').replace('.csv', '')
         })
             
         print("Conclusion")
@@ -72,6 +78,6 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
         print("\tAvg Reward", avg_reward)
         print("\tNum solved", num_solved)
         
-        print(sess_type + " Finished\n")
+        print(session + " Finished\n")
 
 
