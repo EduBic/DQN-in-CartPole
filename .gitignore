@@ -7,3 +7,4 @@ log/
 *.npy
 Plot/
 *.csv
+*.idea
