@@ -31,10 +31,10 @@ def plot_file(name_file, folder_data, folder_plot):
         # x-axe
         epoch = range(0, len(q_online_value))
 
-        plot_(epoch,  q_online_value,   "Q value per epoch: " + name_file, "Epoch", "q-value")
+        plot_(epoch,  q_online_value,   "Q value per epoch: " + name_file, "Epochs", "Q-value estimates")
         save_fig(folder_plot, name_file + "-q-value-per-epoch")
 
-        plot_(epoch,  loss, "Loss: " + name_file, "Epoch", "Loss")
+        plot_(epoch,  loss, "Loss: " + name_file, "Epochs", "Loss")
         save_fig(folder_plot, name_file + "-loss")
 
     else:
@@ -45,10 +45,10 @@ def plot_file(name_file, folder_data, folder_plot):
         # x-axe
         episode = range(0, len(q_online_value))
 
-        plot_(episode, q_online_value, "Q value per episode: " + name_file, "Episode", "Q-value")
+        plot_(episode, q_online_value, "Q value per episode: " + name_file, "Episodes", "Q-value estimates")
         save_fig(folder_plot, name_file + "-q-value-per-ep")
 
-        plot_(episode, rewards, "Rewards: " + name_file, "Episode", "Reward")
+        plot_(episode, rewards, "Rewards: " + name_file, "Episodes", "Rewards")
         save_fig(folder_plot, name_file + "-rewards")
 
 
