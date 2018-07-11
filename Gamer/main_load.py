@@ -26,9 +26,13 @@ end = 0
 
 EPISODES = 100
 
-models_dir = 'models/B/'
+# exp = "mod_31b"
+
+models_dir = '../DQN/models/'
+save_sessions_folder = 'sessions/'
 
 RENDER = False
+
 
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
     randAgent = RandomAgent(actionsCount, memory_capacity)
@@ -38,7 +42,7 @@ def get_rand_agent_memory(env, actionsCount, memory_capacity):
     return randAgent.memory
 
 
-def init_CartPole(double_enable, model):
+def init_CartPole(model):
     CartPoleProb = "CartPole-v0"
     env = Environment(CartPoleProb, normalize=False, render=RENDER)
 
@@ -56,74 +60,68 @@ def init_CartPole(double_enable, model):
 def main():
     # Settings
     seed = 42
-    double_enable = True
-
-    method = "No-method"
-    if double_enable:
-        method = "DDQN"
-    else:
-        method = "DQN"
-
-    prefix = method + str(seed)
 
     random.seed(seed)
     np.random.seed(seed)
 
-    # initialize the csv
-    sessions_folder = 'sessions/'
+    if not os.path.exists(save_sessions_folder):
+        os.makedirs(save_sessions_folder)
 
-    if not os.path.exists(sessions_folder):
-        os.makedirs(sessions_folder)
+    folders_name = [f for f in listdir(models_dir) if os.path.isdir(models_dir + f)]
+    folders_path = [models_dir + f for f in listdir(models_dir) if os.path.isdir(models_dir + f)]
 
-    model_names = [f for f in listdir(models_dir) if isfile(join(models_dir, f))]
+    for i in range(1):
 
-    DATE = dt.datetime.now().strftime("%m-%dT%H-%M-%S")
-    dir_run = sessions_folder + DATE
-    os.makedirs(dir_run)
+        model_names = [f for f in listdir(folders_path[i]) if isfile(join(folders_path[i], f))]
 
-    for m in model_names:
+        dir_run = save_sessions_folder + folders_name[i] + '/'
 
-        steps = re.findall('_(.*).h5', models_dir + m)
-        step_trained = steps[0]
+        os.makedirs(dir_run)
 
-        model = load_model(models_dir + m)
-        agent, env = init_CartPole(double_enable, model)
-        env.set_seed(seed)
+        for m in model_names:
 
-        print("Seed set:", seed)
-        print("\nStart")
+            steps = re.findall('_(.*).h5', m)
 
-        nameResult = prefix + '-' + DATE
-        fileCsvPath_gamer = dir_run + '/' + nameResult + '_e' + step_trained + '.csv'
+            print(steps)
 
-        with open(fileCsvPath_gamer, 'w', newline='') as csvfile:
-            fieldnames = ['episode', 'reward']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
+            step_trained = steps[0]
 
-            try:
-                start = timer()
+            model = load_model(models_dir + folders_name[i] + '/' + m)
+            agent, env = init_CartPole(model)
+            env.set_seed(seed)
 
-                for episode in range(EPISODES):
+            print("Seed set:", seed)
+            print("\nStart")
 
-                    reward_result = env.run(agent)
+            fileCsvPath_gamer = dir_run + '/' + '_e' + step_trained + '.csv'
 
-                    # print("reward: ", reward_result)
+            with open(fileCsvPath_gamer, 'w', newline='') as csvfile:
+                fieldnames = ['episode', 'reward']
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
 
-                    writer.writerow({
-                        fieldnames[0]: episode + 1,
-                        fieldnames[1]: reward_result,
-                    })
+                try:
+                    start = timer()
 
-            finally:
-                end = timer()
-                elapsed_seconds = end - start
-                # csvfile.write(str(elapsed_seconds))
-                print("Total time (s)", str(elapsed_seconds))
+                    for episode in range(EPISODES):
 
-    print("End\n")
-    winsound.Beep(freq, duration)
+                        reward_result = env.run(agent)
 
+                        # print("reward: ", reward_result)
+
+                        writer.writerow({
+                            fieldnames[0]: episode + 1,
+                            fieldnames[1]: reward_result,
+                        })
+
+                finally:
+                    end = timer()
+                    elapsed_seconds = end - start
+                    # csvfile.write(str(elapsed_seconds))
+                    print("Total time (s)", str(elapsed_seconds))
+
+        print("End\n")
+        winsound.Beep(freq, duration)
 
 if __name__ == "__main__":
     main()
