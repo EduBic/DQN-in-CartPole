@@ -4,14 +4,24 @@ import csv
 import matplotlib.pyplot as plt
 
 # Global settings
-RESTRICTOR_FACTOR = 8 
-PARENT_FOLDER = "Data/"
+
+# epoch of 32 steps with restrictor factor of 16 means: 32*16 = 512 steps per epoch
+RESTRICTOR_FACTOR = 32
+
+PARENT_FOLDER = "EpochsCSV/"
+SAVED_FOLDER = "NewEpochsCSV/"
 
 
 # Utility functions
 
 def save_new_q_values_in_csv(data_file, new_q_values):
-    with open(str(data_file) + "-restricted.csv", 'w', newline='') as csvfile:
+
+    if not os.path.exists(SAVED_FOLDER):
+        os.makedirs(SAVED_FOLDER)
+
+    name_file = SAVED_FOLDER + data_file.replace('.csv', '') + "-restricted-" + str(RESTRICTOR_FACTOR)
+
+    with open(name_file + ".csv", 'w', newline='') as csvfile:
         fieldnames = ['epoch', 'q-online-value']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
