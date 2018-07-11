@@ -41,20 +41,20 @@ def plot_new_q_values(new_q_values):
     plt.plot(xs, ys, linewidth=0.4)
     plt.show()
 
-def restrict_epochs(data_file):
+def restrict_epochs(path, data_file):
     print()
     print("*", data_file)
 
     # open csv file
     # epoch, q-online-vale, q-target-value, ...
-    file_csv = np.genfromtxt(PARENT_FOLDER + data_file, delimiter=',')
+    file_csv = np.genfromtxt(path + data_file, delimiter=',')
 
     epochs = file_csv[1:, 0] # select from 1 row (skip header) for 0 column
     q_values = file_csv[1:, 1]
 
     # Remove element until the restrictor factor division return 0
     while not len(epochs) % RESTRICTOR_FACTOR == 0:
-        print("Update length", len(epochs))
+        #print("Update length", len(epochs))
         epochs = epochs[:-1]
         q_values = q_values[:-1]
 
@@ -76,11 +76,15 @@ def restrict_epochs(data_file):
 # ** MAIN **
 
 # get the epoch files
-data_files = [f for f in os.listdir(PARENT_FOLDER) if "-epoch" in str(f)]
+exp_folders = os.listdir(PARENT_FOLDER)
 
-# iterate the csv file
-#for data_file in data_files:
-restrict_epochs(data_files[0])
+for exp_folder in exp_folders:
+    print("\n", exp_folder)
+    data_files = [f for f in os.listdir(PARENT_FOLDER + exp_folder) if "-epoch" in str(f)]
+
+    # iterate the csv file
+    for data_file in data_files:
+        restrict_epochs(PARENT_FOLDER + exp_folder + "/", data_file)
 
 
 
