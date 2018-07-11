@@ -68,9 +68,12 @@ def main():
         os.makedirs(save_sessions_folder)
 
     folders_name = [f for f in listdir(models_dir) if os.path.isdir(models_dir + f)]
-    folders_path = [models_dir + f for f in listdir(models_dir) if os.path.isdir(models_dir + f)]
+    folders_name.sort(key=len)
 
-    for i in range(1):
+    folders_path = [models_dir + f for f in listdir(models_dir) if os.path.isdir(models_dir + f)]
+    folders_path.sort(key=len)
+
+    for i in range(8,9):
 
         model_names = [f for f in listdir(folders_path[i]) if isfile(join(folders_path[i], f))]
 
