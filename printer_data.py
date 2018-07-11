@@ -9,10 +9,13 @@ How to use printer_data:
     assing to 'FOLDER_PLOT_DATA' variable the path to write png plot image
 """
 
-FOLDER_DATA = "Data/Shallow/"
-FOLDER_PLOT_DATA = FOLDER_DATA + "Plot/"
+FOLDER_DATA = "Data/"
+FOLDER_PLOT_DATA = FOLDER_DATA + "Plot"
 
 def main():
+
+    if not os.path.exists(FOLDER_PLOT_DATA):
+        os.makedirs(FOLDER_PLOT_DATA)
 
     files = os.listdir(FOLDER_DATA)
 
