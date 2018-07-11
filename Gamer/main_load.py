@@ -82,16 +82,11 @@ def main():
 
             steps = re.findall('_(.*).h5', m)
 
-            print(steps)
-
             step_trained = steps[0]
 
             model = load_model(models_dir + folders_name[i] + '/' + m)
             agent, env = init_CartPole(model)
             env.set_seed(seed)
-
-            print("Seed set:", seed)
-            print("\nStart")
 
             fileCsvPath_gamer = dir_run + '/' + '_e' + step_trained + '.csv'
 
@@ -116,11 +111,10 @@ def main():
 
                 finally:
                     end = timer()
-                    elapsed_seconds = end - start
-                    # csvfile.write(str(elapsed_seconds))
-                    print("Total time (s)", str(elapsed_seconds))
+                    #elapsed_seconds = end - start
 
-        print("End\n")
+
+        #print("End\n")
         winsound.Beep(freq, duration)
 
 if __name__ == "__main__":
