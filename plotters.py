@@ -25,17 +25,19 @@ def plot_file(name_file, folder_data, folder_plot):
     if "epoch" in name_file:
         # y-axe
         q_online_value = csv_file[:, 1]
-        q_target_value = csv_file[:, 2]
-        epsilon = csv_file[:, 3]
-        loss = csv_file[:, 4]
+        #q_target_value = csv_file[:, 2]
+        #epsilon = csv_file[:, 3]
+        if "restricted" not in name_file:
+            loss = csv_file[:, 4]
         # x-axe
         epoch = range(0, len(q_online_value))
 
         plot_(epoch,  q_online_value,   "Q value per epoch: " + name_file, "Epochs", "Q-value estimates")
         save_fig(folder_plot, name_file + "-q-value-per-epoch")
 
-        plot_(epoch,  loss, "Loss: " + name_file, "Epochs", "Loss")
-        save_fig(folder_plot, name_file + "-loss")
+        if "restricted" not in name_file:
+            plot_(epoch,  loss, "Loss: " + name_file, "Epochs", "Loss")
+            save_fig(folder_plot, name_file + "-loss")
 
     else:
         # y-axe
