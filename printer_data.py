@@ -9,15 +9,15 @@ How to use printer_data:
     assing to 'FOLDER_PLOT_DATA' variable the path to write png plot image
 """
 
-FOLDER_DATA = "Data/"
+FOLDER_DATA = "results/"
 FOLDER_PLOT_DATA = FOLDER_DATA + "Plot"
 
 def main():
 
+    files = os.listdir(FOLDER_DATA)
+
     if not os.path.exists(FOLDER_PLOT_DATA):
         os.makedirs(FOLDER_PLOT_DATA)
-
-    files = os.listdir(FOLDER_DATA)
 
     for f in files:
         print(f)

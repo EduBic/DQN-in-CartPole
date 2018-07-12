@@ -18,8 +18,10 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
 
         folder = PARENT_FOLDER + session + "/"
         files = os.listdir(folder)
+        files.sort(key=len)
 
         files.pop(0) # remove model with 0 steps of training
+        files = files[:83]
 
         # General data on session
         num_model = 0
@@ -49,6 +51,7 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
                 solved = True
                 num_solved += 1
                 if first_win is None:
+                    print("FIRST WIN")
                     first_win = f
 
             print(f)
@@ -57,9 +60,10 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
             print("")
 
             num_model += 1
+            #input("Continue? Press any keyes")
 
         # Extract info from name of model
-        session = session[8:].replace("_", '')
+        session = session[7:].replace("_", '')
 
         model_type = ''.join([c for c in session if not c.isdigit()]).replace("d", " deep")
         seed = session.replace("DDQN", '').replace("DQN", '').replace("d", '')

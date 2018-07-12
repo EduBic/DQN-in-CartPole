@@ -21,19 +21,20 @@ BEEP = True
 
 
 EPISODES = 3600
-CHECKPOINT_STEP = 200
-SAVE_CHECK = False
+CHECKPOINT_STEP = 100
+SAVE_CHECK = True
+MAX_STEPS = 1024000
 
-EXPERIMENT = 0
-EXPERIMENT_FOLDER = "" #"res_experiment_" + str(EXPERIMENT) + "/"
+EXPERIMENT = '11'
+EXPERIMENT_FOLDER = "res_experiment_" + EXPERIMENT + "/"
 
 # DQN settings
-SEED = 32
+SEED = 52
 TAU = 1000
 DOUBLE_SET = True
 
 # Architecture DQN settings
-DEEP_SET = False
+DEEP_SET = True
 
 
 def get_rand_agent_memory(env, actionsCount, memory_capacity):
@@ -81,7 +82,7 @@ def main():
     else:
         architecture = "-"
 
-    prefix = method + architecture + str(SEED) + "-tau" + TAU
+    prefix = method + architecture + str(SEED) + "-tau" + str(TAU)
 
     random.seed(SEED)
     np.random.seed(SEED)
@@ -93,7 +94,7 @@ def main():
 
     # initialize the csv 
     folder = 'results/' + EXPERIMENT_FOLDER
-    models_folder = 'models/' + EXPERIMENT_FOLDER
+    models_folder = 'models/' + 'mod_' + EXPERIMENT + '/'
 
     nameResult = prefix + '-' + dt.datetime.now().strftime("%m-%dT%H-%M")
     fileNetPath = folder + nameResult + '.h5'
@@ -121,10 +122,17 @@ def main():
         try:
             start = timer()
 
-            for episode in range(EPISODES+1):
+            step_counter = 0
+            episode = 0
+
+            while step_counter <= MAX_STEPS:
+            #for episode in range(EPISODES+1):
 
                 reward_result = env.run(agent)
-                #print("Tot. reward", reward_result)
+                step_counter += reward_result
+                # print("steps: ", step_counter)
+
+                # print("Tot. reward", reward_result)
 
                 q_online_results = agent.get_and_reinit_q_online_results()
                 q_target_results = agent.get_and_reinit_q_target_results()
@@ -138,6 +146,8 @@ def main():
 
                 if SAVE_CHECK and episode % CHECKPOINT_STEP == 0:
                     agent.brain.model.save(fileCheckpointPath + '_' + str(episode) + '.h5')
+
+                episode += 1
 
         finally:
             #agent.brain.model.save(fileNetPath)

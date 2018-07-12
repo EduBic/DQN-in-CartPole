@@ -104,7 +104,7 @@ class Agent:
         self.index_results += 1
 
         DECAY_EXP = False
-        print("BE CAREFUL!! Decay exponential:", DECAY_EXP)
+        # print("BE CAREFUL!! Decay exponential:", DECAY_EXP)
         
         # Decay the learning
         if DECAY_EXP:

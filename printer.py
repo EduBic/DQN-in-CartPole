@@ -11,14 +11,14 @@ RESULTS_DIR = 'DQN/results/'
 PLOT_DIR = 'Plot'
 
 # DEBUG
-experiment = '07-02T16-26-44'
+experiment = 'mod_20b'
 SESSIONS_DIR = 'Gamer/sessions/' + experiment + '/'
 
 version = 0
 
 
-SAVE_PLOT = True
-SHOW = False
+SAVE_PLOT = False
+SHOW = True
 
 '''
 *     0         1                   2               3               4
@@ -136,10 +136,18 @@ def plot_mean_sessions(files):
 
         std_array.append(rewards[1:].std())
 
-    plt.xticks(x)
+    #plt.xticks(np.arange(min(x), max(x)+200), rotation="vertical", fontsize=8)
+    plt.xticks(np.arange(min(x), max(x) + 1, 200), rotation="vertical", fontsize=7)
     plt.errorbar(x, r_means, std_array, linestyle='None', marker='o')
 
-    plt.title('Reward Mean')
+    plt.plot([4000, -200], [195, 195], 'g', linewidth=0.6)
+
+    axes = plt.gca()
+    axes.set_xlim([-200, 3700])
+    axes.set_ylim([-10, 240])
+
+
+    plt.title('DQN 32')
     plt.xlabel('Episodes of training')
     plt.ylabel('Reward Mean')
     # plt.legend()
@@ -220,6 +228,7 @@ def main():
         # 'DQN2-seed-52-2018-06-26T13-56-28'
     ]
 
+    '''
     OVERLAY = False
 
     if OVERLAY:
@@ -230,10 +239,11 @@ def main():
             plot_q_values([f + "-epoch"])
             plot_loss([f + "-epoch"])
             plot_rewards([f])
+    '''
 
-    # game_sessions = [f for f in listdir(SESSIONS_DIR) if isfile(join(SESSIONS_DIR, f))]
-    # game_sessions.sort(key=len)
-    # plot_mean_sessions(game_sessions)
+    game_sessions = [f for f in listdir(SESSIONS_DIR) if isfile(join(SESSIONS_DIR, f))]
+    game_sessions.sort(key=len)
+    plot_mean_sessions(game_sessions)
 
 
 if __name__ == "__main__":
