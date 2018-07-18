@@ -5,10 +5,12 @@ import matplotlib.pyplot as plt
 
 # Global settings
 
-# epoch of 32 steps with restrictor factor of 16 means: 32*16 = 512 steps per epoch
+# epoch of 32 steps with restrictor factor of 16 means: 
+# 32 * 16 = 512 steps per epoch
+# 32 * 32 = 1024 steps per epoch
 RESTRICTOR_FACTOR = 32
 
-PARENT_FOLDER = "EpochsCSV/"
+PARENT_FOLDER = "_b/"
 SAVED_FOLDER = "NewEpochsCSV/"
 
 
@@ -68,8 +70,8 @@ def restrict_epochs(path, data_file):
     splitted_q_values = np.split(q_values, num_new_epochs)
     new_q_values = np.mean(splitted_q_values, 1) # for each row compute the mean
 
-    # save_new_q_values_in_csv(data_file, new_q_values)
-    plot_new_q_values(new_q_values)
+    save_new_q_values_in_csv(data_file, new_q_values)
+    #plot_new_q_values(new_q_values)
 
 
 
@@ -80,11 +82,13 @@ exp_folders = os.listdir(PARENT_FOLDER)
 
 for exp_folder in exp_folders:
     print("\n", exp_folder)
-    data_files = [f for f in os.listdir(PARENT_FOLDER + exp_folder) if "-epoch" in str(f)]
+    exp_folder = PARENT_FOLDER + exp_folder
+
+    data_files = [f for f in os.listdir(exp_folder) if "-epoch" in str(f)]
 
     # iterate the csv file
     for data_file in data_files:
-        restrict_epochs(PARENT_FOLDER + exp_folder + "/", data_file)
+        restrict_epochs(exp_folder + "/", data_file)
 
 
 

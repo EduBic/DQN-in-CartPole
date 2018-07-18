@@ -1,6 +1,6 @@
 
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Dropout
 from keras.optimizers import RMSprop
 from keras import backend as K
 
@@ -40,7 +40,9 @@ class Brain:
         if self.deep_set: # deep
             model.add(Dense(units=64, activation='relu', 
                             input_dim=self.stateDataCount))
+            #model.add(Dropout(0.2))
             model.add(Dense(units=32, activation='relu'))
+            #model.add(Dropout(0.2))
 
         else: # Normal layer (shallow)
             model.add(Dense(units=64, activation='relu', 

@@ -6,11 +6,6 @@ import statistics
 
 indeces_epoch   = [1, 2]
 
-RESULTS_DIR = 'DQN/results/'
-
-TITLE = "DQN Shallow"
-
-
 def plot_q_values(q_value_mean, q_value_median, q_value_min, q_value_max):
     plt.clf()
 
@@ -25,7 +20,7 @@ def plot_q_values(q_value_mean, q_value_median, q_value_min, q_value_max):
     plt.plot([135000, -200], [100, 100], 'g', linewidth=0.6)
 
     axes = plt.gca()
-    axes.set_xlim([-10, 1050])
+    axes.set_xlim([-10, 420])
     axes.set_ylim([-10, 350])
 
     #axes.get_xaxis().set_visible(False)
@@ -38,14 +33,32 @@ def plot_q_values(q_value_mean, q_value_median, q_value_min, q_value_max):
     plt.show()
 
 
+RESULTS_DIR = 'NewEpochsCSV/'
+TITLE = "DQN deep"
 
 def main():
 
     files = [
 
-        'res_experiment_0/DQN-32-tau1000-07-10T19-53-epoch-restricted-32',
-        'res_experiment_1/DQN-42-tau1000-07-10T21-47-epoch-restricted-32',
-        'res_experiment_2/DQN-52-tau1000-07-10T22-18-epoch-restricted-32'
+        # 'DoubleDQN-32-tau1000-07-07T16-08-epoch-restricted-32',
+        # 'DoubleDQN-42-tau1000-07-07T16-21-epoch-restricted-32',
+        # 'DoubleDQN-52-tau1000-07-07T16-32-epoch-restricted-32',
+
+        # 'DoubleDQN-deep-32-tau1000-07-07T17-36-epoch-restricted-32',
+        # 'DoubleDQN-deep-42-tau1000-07-07T17-51-epoch-restricted-32',
+        # 'DoubleDQN-deep-52-tau1000-07-07T18-11-epoch-restricted-32',
+
+        'DQN-32-tau1000-07-07T12-33-epoch-restricted-32',
+        'DQN-42-tau1000-07-07T12-42-epoch-restricted-32',
+        'DQN-52-tau1000-07-07T12-53-epoch-restricted-32',
+
+        # 'DQN-deep-32-tau1000-07-07T16-41-epoch-restricted-32',
+        # 'DQN-deep-42-tau1000-07-07T16-58-epoch-restricted-32',
+        # 'DQN-deep-52-tau1000-07-07T17-11-epoch-restricted-32',
+
+        #'res_experiment_0/DQN-32-tau1000-07-10T19-53-epoch-restricted-32',
+        #'res_experiment_1/DQN-42-tau1000-07-10T21-47-epoch-restricted-32',
+        #'res_experiment_2/DQN-52-tau1000-07-10T22-18-epoch-restricted-32'
 
         # 'res_experiment_3/DQN-deep-32-tau1000-07-11T10-04-epoch-restricted-32',
         # 'res_experiment_4/DQN-deep-42-tau1000-07-11T11-32-epoch-restricted-32',

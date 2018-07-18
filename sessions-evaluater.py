@@ -12,6 +12,7 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
     writer.writeheader()
 
     sessions_folders = os.listdir(PARENT_FOLDER)
+    sessions_folders.sort(key=len)
 
     # Load all file for each folders
     for session in sessions_folders:
@@ -21,7 +22,7 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
         files.sort(key=len)
 
         files.pop(0) # remove model with 0 steps of training
-        files = files[:83]
+        #files = files[:83]
 
         # General data on session
         num_model = 0
@@ -73,7 +74,7 @@ with open("sess-results.csv", 'w', newline='') as csvfile:
             fieldnames[1]: seed,
             fieldnames[2]: avg_reward,
             fieldnames[3]: np.std(all_rewards),
-            fieldnames[4]: num_solved,
+            fieldnames[4]: str(num_solved) + "/" + str(num_model) ,
             fieldnames[5]: first_win.replace('_e','').replace('.csv', '')
         })
             

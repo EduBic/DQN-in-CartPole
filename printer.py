@@ -11,8 +11,8 @@ RESULTS_DIR = 'DQN/results/'
 PLOT_DIR = 'Plot'
 
 # DEBUG
-experiment = 'mod_20b'
-SESSIONS_DIR = 'Gamer/sessions/' + experiment + '/'
+experiment = 'mod_11b_DDQN_d_52'
+SESSIONS_DIR = 'sessions/' + experiment + '/'
 
 version = 0
 
@@ -140,14 +140,16 @@ def plot_mean_sessions(files):
     plt.xticks(np.arange(min(x), max(x) + 1, 200), rotation="vertical", fontsize=7)
     plt.errorbar(x, r_means, std_array, linestyle='None', marker='o')
 
-    plt.plot([4000, -200], [195, 195], 'g', linewidth=0.6)
+
+
+    plt.plot([max(x), -200], [195, 195], 'g', linewidth=0.6)
 
     axes = plt.gca()
-    axes.set_xlim([-200, 3700])
+    axes.set_xlim([-200, max(x)])
     axes.set_ylim([-10, 240])
 
 
-    plt.title('DQN 32')
+    plt.title(experiment)
     plt.xlabel('Episodes of training')
     plt.ylabel('Reward Mean')
     # plt.legend()
